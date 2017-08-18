@@ -1,7 +1,6 @@
 package com.example.quanlm.cardeal.fragment;
 
 import android.os.Bundle;
-import android.service.notification.Condition;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -9,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 
 import com.example.quanlm.cardeal.R;
 import com.example.quanlm.cardeal.adapter.BrandAdapter;
@@ -30,18 +28,14 @@ public class ConditionSearchDialogFragment extends DialogFragment {
     RecyclerView rcvCarType;
     OnSearchConditionChangedListener mListener;
 
-    String selectedBrandCode;
-    String selectedCarTypeCode;
-    String selectedPriceStart;
-    String selectedPriceEnd;
-    String selectedManufacturedYearStart;
-    String selectedManufacturedYearEnd;
+    Filter mFilter;
 
     public ConditionSearchDialogFragment() {
     }
 
-    public static ConditionSearchDialogFragment newInstance(){
+    public static ConditionSearchDialogFragment newInstance(Filter filter) {
         ConditionSearchDialogFragment fragment = new ConditionSearchDialogFragment();
+        fragment.mFilter = filter;
         return fragment;
     }
 
@@ -64,6 +58,33 @@ public class ConditionSearchDialogFragment extends DialogFragment {
         getView().findViewById(R.id.btnSearch).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String[] selectedBrandCode;
+                String[] selectedCarTypeCode;
+                String selectedPriceStart = "";
+                String selectedPriceEnd = "";
+                String selectedManufacturedYearStart = "";
+                String selectedManufacturedYearEnd = "";
+
+                // Process selected brands
+                List<Brand> listFilterBrand = ((BrandAdapter) rcvBrand.getAdapter()).getmListBrand();
+                selectedBrandCode = new String[listFilterBrand.size()];
+                for (int i = 0; i < listFilterBrand.size(); i++) {
+                    Brand iBrand = listFilterBrand.get(i);
+                    if (listFilterBrand.get(i).isSelected()) {
+                        selectedBrandCode[i] = iBrand.getBrandCode();
+                    }
+                }
+
+                // Process selected car type
+                List<CarType> listFilterCarType = ((CarTypeAdapter) rcvCarType.getAdapter()).getLstCarType();
+                selectedCarTypeCode = new String[listFilterCarType.size()];
+                for (int i = 0; i < listFilterCarType.size(); i++) {
+                    CarType iCarType = listFilterCarType.get(i);
+                    if (iCarType.isChecked()) {
+                        selectedCarTypeCode[i] = iCarType.getCarTypeCode();
+                    }
+                }
+
                 Filter filter = new Filter(selectedBrandCode,
                         selectedCarTypeCode,
                         selectedPriceStart,
@@ -74,10 +95,29 @@ public class ConditionSearchDialogFragment extends DialogFragment {
                 mListener.OnSearchConditionChanged(filter);
             }
         });
+
+        // TODO: Event for clear button
     }
 
     private void initControls() {
+        // TODO: Get current search codition and bind
+
         rcvBrand = (RecyclerView) getView().findViewById(R.id.rcvBrand);
+        List<Brand> lstBrand = getListBrandCondition();
+        BrandAdapter adtBrand = new BrandAdapter(getContext(), lstBrand);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
+        rcvBrand.setLayoutManager(layoutManager);
+        rcvBrand.setAdapter(adtBrand);
+
+        rcvCarType = (RecyclerView) getView().findViewById(R.id.rcvCarType);
+        List<CarType> lstCarType = getListCarTypeCondition();
+        CarTypeAdapter adtCarType = new CarTypeAdapter(getContext(), lstCarType);
+        RecyclerView.LayoutManager layoutManagerCarType = new GridLayoutManager(getContext(), 2);
+        rcvCarType.setLayoutManager(layoutManagerCarType);
+        rcvCarType.setAdapter(adtCarType);
+    }
+
+    private List<Brand> getListBrandCondition() {
         List<Brand> lstBrand = new ArrayList<>();
         lstBrand.add(new Brand("Honda", "Honda"));
         lstBrand.add(new Brand("Toyota", "Toyota"));
@@ -86,12 +126,24 @@ public class ConditionSearchDialogFragment extends DialogFragment {
         lstBrand.add(new Brand("Mercedes", "Mercedes-Benz"));
         lstBrand.add(new Brand("Audi", "Audi"));
         lstBrand.add(new Brand("BMW", "BMW"));
-        BrandAdapter adtBrand = new BrandAdapter(getContext(), lstBrand);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
-        rcvBrand.setLayoutManager(layoutManager);
-        rcvBrand.setAdapter(adtBrand);
 
-        rcvCarType = (RecyclerView) getView().findViewById(R.id.rcvCarType);
+        if (mFilter != null) {
+            String[] lstCheckedbrand = mFilter.getBrandCode();
+            for (int idxCheckedBrand = 0; idxCheckedBrand < lstCheckedbrand.length; idxCheckedBrand++) {
+                for (int idxBrand = 0; idxBrand < lstBrand.size(); idxBrand++) {
+                    Brand brand = lstBrand.get(idxBrand);
+                    String checkedBrand = lstCheckedbrand[idxCheckedBrand];
+                    if (brand.getBrandCode().equals(checkedBrand)) {
+                        brand.setSelected(true);
+                    }
+                }
+            }
+        }
+
+        return lstBrand;
+    }
+
+    private List<CarType> getListCarTypeCondition() {
         List<CarType> lstCarType = new ArrayList<>();
         lstCarType.add(new CarType("type1", "Sedan"));
         lstCarType.add(new CarType("type1", "Hatchback"));
@@ -99,10 +151,20 @@ public class ConditionSearchDialogFragment extends DialogFragment {
         lstCarType.add(new CarType("type1", "SUV"));
         lstCarType.add(new CarType("type1", "Crossover"));
         lstCarType.add(new CarType("type1", "Coupe"));
-        CarTypeAdapter adtCarType = new CarTypeAdapter(getContext(), lstCarType);
-        RecyclerView.LayoutManager layoutManagerCarType = new GridLayoutManager(getContext(), 2);
-        rcvCarType.setLayoutManager(layoutManagerCarType);
-        rcvCarType.setAdapter(adtCarType);
+
+        if (mFilter != null) {
+            String[] lstCheckedCarType = mFilter.getCarTypeCode();
+            for (int idxCheckedCarType = 0; idxCheckedCarType < lstCheckedCarType.length; idxCheckedCarType++) {
+                for (int idxCarType = 0; idxCarType < lstCarType.size(); idxCarType++) {
+                    CarType carType = lstCarType.get(idxCarType);
+                    String checkedCarType = lstCheckedCarType[idxCheckedCarType];
+                    if (carType.getCarTypeCode().equals(checkedCarType)) {
+                        carType.setChecked(true);
+                    }
+                }
+            }
+        }
+        return lstCarType;
     }
 
     public OnSearchConditionChangedListener getmListener() {

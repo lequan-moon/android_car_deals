@@ -20,6 +20,7 @@ import java.util.List;
 public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
     Context mContext;
     List<Car> lstCar;
+    OnCarSelectListener mCarSelectListener;
 
     public CarAdapter(Context mContext, List<Car> lstCar) {
         this.mContext = mContext;
@@ -35,10 +36,18 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
 
     @Override
     public void onBindViewHolder(CarViewHolder holder, int position) {
-        Car car = lstCar.get(position);
+        final Car car = lstCar.get(position);
         // TODO: Get and append car's thumbnail
         holder.txtCarName.setText(car.getName());
         holder.txtDescription.setText(car.getDescription());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mCarSelectListener != null){
+                    mCarSelectListener.onCarSelect(car.getCode());
+                }
+            }
+        });
     }
 
     @Override
@@ -50,12 +59,26 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
         ImageView imgCarThumb;
         TextView txtCarName;
         TextView txtDescription;
+        View itemView;
 
         public CarViewHolder(View itemView) {
             super(itemView);
             imgCarThumb = (ImageView) itemView.findViewById(R.id.imgCarThumb);
             txtCarName = (TextView) itemView.findViewById(R.id.txtCarName);
             txtDescription = (TextView) itemView.findViewById(R.id.txtDescription);
+            this.itemView = itemView;
         }
+    }
+
+    public OnCarSelectListener getmCarSelectListener() {
+        return mCarSelectListener;
+    }
+
+    public void setmCarSelectListener(OnCarSelectListener mCarSelectListener) {
+        this.mCarSelectListener = mCarSelectListener;
+    }
+
+    public interface OnCarSelectListener {
+        void onCarSelect(String carCode);
     }
 }

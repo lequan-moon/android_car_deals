@@ -5,14 +5,14 @@ package com.example.quanlm.cardeal.model;
  */
 
 public class Filter {
-    String brandCode;
-    String carTypeCode;
+    String[] brandCode;
+    String[] carTypeCode;
     String priceStart;
     String priceEnd;
     String manufacturedYearStart;
     String manufacturedYearEnd;
 
-    public Filter(String brandCode, String carTypeCode, String priceStart, String priceEnd, String manufacturedYearStart, String manufacturedYearEnd) {
+    public Filter(String[] brandCode, String[] carTypeCode, String priceStart, String priceEnd, String manufacturedYearStart, String manufacturedYearEnd) {
         this.brandCode = brandCode;
         this.carTypeCode = carTypeCode;
         this.priceStart = priceStart;
@@ -21,19 +21,19 @@ public class Filter {
         this.manufacturedYearEnd = manufacturedYearEnd;
     }
 
-    public String getBrandCode() {
+    public String[] getBrandCode() {
         return brandCode;
     }
 
-    public void setBrandCode(String brandCode) {
+    public void setBrandCode(String[] brandCode) {
         this.brandCode = brandCode;
     }
 
-    public String getCarTypeCode() {
+    public String[] getCarTypeCode() {
         return carTypeCode;
     }
 
-    public void setCarTypeCode(String carTypeCode) {
+    public void setCarTypeCode(String[] carTypeCode) {
         this.carTypeCode = carTypeCode;
     }
 

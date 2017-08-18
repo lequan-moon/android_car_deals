@@ -7,6 +7,7 @@ package com.example.quanlm.cardeal.model;
 public class CarType {
     String carTypeCode;
     String carTypeName;
+    boolean isChecked;
 
     public CarType(String carTypeCode, String carTypeName) {
 
@@ -28,5 +29,13 @@ public class CarType {
 
     public void setCarTypeName(String carTypeName) {
         this.carTypeName = carTypeName;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 }

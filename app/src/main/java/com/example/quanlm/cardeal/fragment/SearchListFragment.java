@@ -1,8 +1,11 @@
 package com.example.quanlm.cardeal.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.quanlm.cardeal.ActCarDetail;
 import com.example.quanlm.cardeal.R;
 import com.example.quanlm.cardeal.adapter.CarAdapter;
 import com.example.quanlm.cardeal.model.Car;
@@ -28,11 +32,12 @@ import java.util.List;
  * Use the {@link SearchListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SearchListFragment extends Fragment implements ConditionSearchDialogFragment.OnSearchConditionChangedListener {
+public class SearchListFragment extends Fragment implements ConditionSearchDialogFragment.OnSearchConditionChangedListener, CarAdapter.OnCarSelectListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -44,6 +49,10 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
 
     Filter mFilter;
     RecyclerView rcvCarList;
+    private int lastFirstVisiblePosition = 0;
+    public static final String CAR_DETAIL_PARAMS = "car_detail_params";
+    ConditionSearchDialogFragment conditionSearchDialogFragment;
+
 
     public SearchListFragment() {
         // Required empty public constructor
@@ -96,9 +105,13 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
             @Override
             public void onClick(View v) {
                 FragmentManager fm = getChildFragmentManager();
-                ConditionSearchDialogFragment conditionSearchDialogFragment = ConditionSearchDialogFragment.newInstance();
+                if (conditionSearchDialogFragment == null) {
+                    conditionSearchDialogFragment = ConditionSearchDialogFragment.newInstance(mFilter);
+                }
                 conditionSearchDialogFragment.setmListener(SearchListFragment.this);
+                conditionSearchDialogFragment.mFilter = mFilter;
                 conditionSearchDialogFragment.show(fm, "ConditionSearch");
+
             }
         });
     }
@@ -108,16 +121,30 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
         rcvCarList = (RecyclerView) getView().findViewById(R.id.rcvCarList);
         List<Car> lstCar = new ArrayList<>();
         lstCar.add(new Car("", "Xe 1", "Description car 1", "100000000"));
-        lstCar.add(new Car("", "Xe 1", "Description car 1", "100000000"));
-        lstCar.add(new Car("", "Xe 1", "Description car 1", "100000000"));
-        lstCar.add(new Car("", "Xe 1", "Description car 1", "100000000"));
-        lstCar.add(new Car("", "Xe 1", "Description car 1", "100000000"));
-        lstCar.add(new Car("", "Xe 1", "Description car 1", "100000000"));
-        lstCar.add(new Car("", "Xe 1", "Description car 1", "100000000"));
+        lstCar.add(new Car("", "Xe 2", "Description car 2", "100000000"));
+        lstCar.add(new Car("", "Xe 3", "Description car 3", "100000000"));
+        lstCar.add(new Car("", "Xe 4", "Description car 4", "100000000"));
+        lstCar.add(new Car("", "Xe 5", "Description car 5", "100000000"));
+        lstCar.add(new Car("", "Xe 6", "Description car 6", "100000000"));
+        lstCar.add(new Car("", "Xe 7", "Description car 7", "100000000"));
         CarAdapter adtCar = new CarAdapter(getContext(), lstCar);
+        adtCar.setmCarSelectListener(this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rcvCarList.setLayoutManager(layoutManager);
         rcvCarList.setAdapter(adtCar);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        lastFirstVisiblePosition = ((LinearLayoutManager) rcvCarList.getLayoutManager()).findFirstVisibleItemPosition();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((LinearLayoutManager) rcvCarList.getLayoutManager()).scrollToPosition(lastFirstVisiblePosition);
+        lastFirstVisiblePosition = 0;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -146,9 +173,20 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
 
     @Override
     public void OnSearchConditionChanged(Filter filter) {
+        conditionSearchDialogFragment.dismiss();
         mFilter = filter;
 
         // TODO: Reload list with received filter condition
+    }
+
+    @Override
+    public void onCarSelect(String carCode) {
+        Intent itCarDetail = new Intent(getContext(), ActCarDetail.class);
+        Bundle params = new Bundle();
+        params.putString("carCode", carCode);
+        itCarDetail.putExtra(CAR_DETAIL_PARAMS, params);
+        startActivity(itCarDetail);
+        getActivity().overridePendingTransition(R.anim.right_out, R.anim.left_in);
     }
 
     /**

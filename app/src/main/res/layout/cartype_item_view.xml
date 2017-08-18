@@ -4,6 +4,7 @@
     android:layout_height="wrap_content">
     <ImageView
         android:id="@+id/imgCarTypeThumb"
+        android:background="@drawable/no_image_car"
         android:layout_width="100dp"
         android:layout_height="100dp" />
     <TextView
@@ -13,4 +14,10 @@
         android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+    <ImageView
+        android:id="@+id/carTypeChecked"
+        android:visibility="invisible"
+        android:src="@drawable/checked"
+        android:layout_width="100dp"
+        android:layout_height="100dp" />
 </RelativeLayout>

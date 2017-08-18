@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.quanlm.cardeal.R;
@@ -33,9 +34,25 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
     }
 
     @Override
-    public void onBindViewHolder(BrandViewHolder holder, int position) {
-        Brand brand = mListBrand.get(position);
+    public void onBindViewHolder(final BrandViewHolder holder, int position) {
+        final Brand brand = mListBrand.get(position);
         holder.txtBrandName.setText(brand.getBrandName());
+        if (brand.isSelected()) {
+            holder.carChecked.setVisibility(View.VISIBLE);
+        }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (brand.isSelected()) {
+                    brand.setSelected(false);
+                    holder.carChecked.setVisibility(View.INVISIBLE);
+                } else {
+                    brand.setSelected(true);
+                    holder.carChecked.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     @Override
@@ -43,13 +60,20 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
         return mListBrand.size();
     }
 
+    public List<Brand> getmListBrand() {
+        return mListBrand;
+    }
+
     public class BrandViewHolder extends RecyclerView.ViewHolder{
         TextView txtBrandName;
+        ImageView carChecked;
+        View itemView;
 
         public BrandViewHolder(View itemView) {
             super(itemView);
+            this.itemView = itemView;
             txtBrandName = (TextView) itemView.findViewById(R.id.txtBrandName);
+            carChecked = (ImageView) itemView.findViewById(R.id.carChecked);
         }
     }
-
 }
