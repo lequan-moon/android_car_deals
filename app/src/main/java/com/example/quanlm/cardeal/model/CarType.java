@@ -7,7 +7,7 @@ package com.example.quanlm.cardeal.model;
 public class CarType {
     String carTypeCode;
     String carTypeName;
-    boolean isChecked;
+    boolean isChecked = false;
 
     public CarType(String carTypeCode, String carTypeName) {
 

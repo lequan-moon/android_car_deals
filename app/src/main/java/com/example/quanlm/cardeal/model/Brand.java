@@ -7,7 +7,7 @@ package com.example.quanlm.cardeal.model;
 public class Brand {
     String brandCode;
     String brandName;
-    boolean isSelected;
+    boolean isSelected = false;
 
     public Brand(String brandCode, String brandName) {
         this.brandCode = brandCode;

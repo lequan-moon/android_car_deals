@@ -146,11 +146,11 @@ public class ConditionSearchDialogFragment extends DialogFragment {
     private List<CarType> getListCarTypeCondition() {
         List<CarType> lstCarType = new ArrayList<>();
         lstCarType.add(new CarType("type1", "Sedan"));
-        lstCarType.add(new CarType("type1", "Hatchback"));
-        lstCarType.add(new CarType("type1", "MPV"));
-        lstCarType.add(new CarType("type1", "SUV"));
-        lstCarType.add(new CarType("type1", "Crossover"));
-        lstCarType.add(new CarType("type1", "Coupe"));
+        lstCarType.add(new CarType("type2", "Hatchback"));
+        lstCarType.add(new CarType("type3", "MPV"));
+        lstCarType.add(new CarType("type4", "SUV"));
+        lstCarType.add(new CarType("type5", "Crossover"));
+        lstCarType.add(new CarType("type6", "Coupe"));
 
         if (mFilter != null) {
             String[] lstCheckedCarType = mFilter.getCarTypeCode();
