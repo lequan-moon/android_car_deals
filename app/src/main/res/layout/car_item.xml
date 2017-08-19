@@ -6,7 +6,6 @@
         android:id="@+id/imgCarThumb"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxHeight="100dp"
         android:background="@drawable/no_image_car"/>
     <LinearLayout
         android:layout_alignBottom="@+id/imgCarThumb"

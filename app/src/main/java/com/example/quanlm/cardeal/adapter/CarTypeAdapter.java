@@ -11,15 +11,17 @@ import android.widget.TextView;
 import com.example.quanlm.cardeal.R;
 import com.example.quanlm.cardeal.model.CarType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by QuanLM on 8/16/2017.
  */
 
-public class CarTypeAdapter extends RecyclerView.Adapter<CarTypeAdapter.CarTypeViewHolder>{
+public class CarTypeAdapter extends RecyclerView.Adapter<CarTypeAdapter.CarTypeViewHolder> {
     Context mContext;
     List<CarType> lstCarType;
+    List<CarTypeViewHolder> mListViewHolder;
 
     public CarTypeAdapter(Context mContext, List<CarType> lstCarType) {
         this.mContext = mContext;
@@ -35,6 +37,13 @@ public class CarTypeAdapter extends RecyclerView.Adapter<CarTypeAdapter.CarTypeV
 
     @Override
     public void onBindViewHolder(final CarTypeViewHolder holder, int position) {
+        if (mListViewHolder == null) {
+            mListViewHolder = new ArrayList<>();
+        }
+        if (!mListViewHolder.contains(holder)) {
+            mListViewHolder.add(holder);
+        }
+
         final CarType carType = lstCarType.get(position);
         holder.txtCarType.setText(carType.getCarTypeName());
         if (carType.isChecked()) {
@@ -61,6 +70,22 @@ public class CarTypeAdapter extends RecyclerView.Adapter<CarTypeAdapter.CarTypeV
 
     public List<CarType> getLstCarType() {
         return lstCarType;
+    }
+
+    public void clearCondition() {
+        // Reset checked mark on view
+        if (mListViewHolder != null) {
+            for (int i = 0; i < mListViewHolder.size(); i++) {
+                mListViewHolder.get(i).carTypeChecked.setVisibility(View.INVISIBLE);
+            }
+        }
+
+        // Reset car type model's checked state
+        if (lstCarType != null) {
+            for (int i = 0; i < lstCarType.size(); i++) {
+                lstCarType.get(i).setChecked(false);
+            }
+        }
     }
 
     public class CarTypeViewHolder extends RecyclerView.ViewHolder {

@@ -120,13 +120,13 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
         btnSearch = (FloatingActionButton) getView().findViewById(R.id.btnSearch);
         rcvCarList = (RecyclerView) getView().findViewById(R.id.rcvCarList);
         List<Car> lstCar = new ArrayList<>();
-        lstCar.add(new Car("", "Xe 1", "Description car 1", "100000000"));
-        lstCar.add(new Car("", "Xe 2", "Description car 2", "100000000"));
-        lstCar.add(new Car("", "Xe 3", "Description car 3", "100000000"));
-        lstCar.add(new Car("", "Xe 4", "Description car 4", "100000000"));
-        lstCar.add(new Car("", "Xe 5", "Description car 5", "100000000"));
-        lstCar.add(new Car("", "Xe 6", "Description car 6", "100000000"));
-        lstCar.add(new Car("", "Xe 7", "Description car 7", "100000000"));
+        lstCar.add(new Car("1", "Xe 1", "Description car 1", "100000000"));
+        lstCar.add(new Car("2", "Xe 2", "Description car 2", "100000000"));
+        lstCar.add(new Car("3", "Xe 3", "Description car 3", "100000000"));
+        lstCar.add(new Car("4", "Xe 4", "Description car 4", "100000000"));
+        lstCar.add(new Car("5", "Xe 5", "Description car 5", "100000000"));
+        lstCar.add(new Car("6", "Xe 6", "Description car 6", "100000000"));
+        lstCar.add(new Car("7", "Xe 7", "Description car 7", "100000000"));
         CarAdapter adtCar = new CarAdapter(getContext(), lstCar);
         adtCar.setmCarSelectListener(this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
@@ -180,10 +180,10 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
     }
 
     @Override
-    public void onCarSelect(String carCode) {
+    public void onCarSelect(Car car) {
         Intent itCarDetail = new Intent(getContext(), ActCarDetail.class);
         Bundle params = new Bundle();
-        params.putString("carCode", carCode);
+        params.putSerializable("selected_car", car);
         itCarDetail.putExtra(CAR_DETAIL_PARAMS, params);
         startActivity(itCarDetail);
         getActivity().overridePendingTransition(R.anim.right_out, R.anim.left_in);

@@ -24,7 +24,7 @@
                         android:id="@+id/imgCarThumb"
                         android:background="@drawable/no_image_car"
                         android:layout_width="match_parent"
-                        android:layout_height="300dp" />
+                        android:layout_height="wrap_content" />
                     <TextView
                         android:text="Car Name"
                         android:id="@+id/txtCarName"
@@ -75,10 +75,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <TextView
+                    android:id="@+id/txtDealerName"
                     android:text="Dealer name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
                 <TextView
+                    android:id="@+id/txtDealerPhoneNumber"
                     android:text="Dealer phone number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -94,6 +96,7 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="16dp"/>
     <TextView
+        android:id="@+id/btnLike"
         android:text="LIKE"
         android:layout_margin="16dp"
         android:layout_alignParentBottom="true"

@@ -44,7 +44,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
             @Override
             public void onClick(View v) {
                 if (mCarSelectListener != null){
-                    mCarSelectListener.onCarSelect(car.getCode());
+                    mCarSelectListener.onCarSelect(car);
                 }
             }
         });
@@ -79,6 +79,6 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
     }
 
     public interface OnCarSelectListener {
-        void onCarSelect(String carCode);
+        void onCarSelect(Car car);
     }
 }

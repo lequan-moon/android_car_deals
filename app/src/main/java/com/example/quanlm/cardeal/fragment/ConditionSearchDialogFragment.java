@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.quanlm.cardeal.R;
 import com.example.quanlm.cardeal.adapter.BrandAdapter;
@@ -19,6 +20,8 @@ import com.example.quanlm.cardeal.model.Filter;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.apptik.widget.MultiSlider;
+
 /**
  * Created by QuanLM on 8/16/2017.
  */
@@ -26,8 +29,15 @@ import java.util.List;
 public class ConditionSearchDialogFragment extends DialogFragment {
     RecyclerView rcvBrand;
     RecyclerView rcvCarType;
-    OnSearchConditionChangedListener mListener;
+    MultiSlider sliderPrice;
+    TextView txtPriceStart;
+    TextView txtPriceEnd;
 
+    MultiSlider sliderManufacturedYear;
+    TextView txtManufacturedStart;
+    TextView txtManufacturedEnd;
+
+    OnSearchConditionChangedListener mListener;
     Filter mFilter;
 
     public ConditionSearchDialogFragment() {
@@ -85,6 +95,14 @@ public class ConditionSearchDialogFragment extends DialogFragment {
                     }
                 }
 
+                // Process price
+                selectedPriceStart = String.valueOf(txtPriceStart.getText());
+                selectedPriceEnd = String.valueOf(txtPriceEnd.getText());
+
+                // Process manufactured date
+                selectedManufacturedYearStart = String.valueOf(txtManufacturedStart.getText());
+                selectedManufacturedYearEnd = String.valueOf(txtManufacturedEnd.getText());
+
                 Filter filter = new Filter(selectedBrandCode,
                         selectedCarTypeCode,
                         selectedPriceStart,
@@ -96,25 +114,93 @@ public class ConditionSearchDialogFragment extends DialogFragment {
             }
         });
 
-        // TODO: Event for clear button
+        getView().findViewById(R.id.btnClear).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Reset checked brand list
+                ((BrandAdapter) rcvBrand.getAdapter()).clearCondition();
+
+                // Reset checked car type
+                ((CarTypeAdapter) rcvCarType.getAdapter()).clearCondition();
+
+                // Reset price slider
+                sliderPrice.getThumb(0).setValue(0);
+                sliderPrice.getThumb(1).setValue(99);
+
+                // Reset manufactured year slider
+                sliderManufacturedYear.getThumb(0).setValue(0);
+                sliderManufacturedYear.getThumb(1).setValue(99);
+            }
+        });
     }
 
     private void initControls() {
-        // TODO: Get current search codition and bind
-
+        // Setup brand condition
         rcvBrand = (RecyclerView) getView().findViewById(R.id.rcvBrand);
         List<Brand> lstBrand = getListBrandCondition();
         BrandAdapter adtBrand = new BrandAdapter(getContext(), lstBrand);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
         rcvBrand.setLayoutManager(layoutManager);
         rcvBrand.setAdapter(adtBrand);
 
+        // Setup cartype condition
         rcvCarType = (RecyclerView) getView().findViewById(R.id.rcvCarType);
         List<CarType> lstCarType = getListCarTypeCondition();
         CarTypeAdapter adtCarType = new CarTypeAdapter(getContext(), lstCarType);
-        RecyclerView.LayoutManager layoutManagerCarType = new GridLayoutManager(getContext(), 2);
+        RecyclerView.LayoutManager layoutManagerCarType = new GridLayoutManager(getContext(), 3);
         rcvCarType.setLayoutManager(layoutManagerCarType);
         rcvCarType.setAdapter(adtCarType);
+
+        // Setup price slider
+        sliderPrice = (MultiSlider) getView().findViewById(R.id.sliderPrice);
+        txtPriceStart = (TextView) getView().findViewById(R.id.txtPriceStart);
+        txtPriceEnd = (TextView) getView().findViewById(R.id.txtPriceEnd);
+        sliderPrice.setMin(0);
+        sliderPrice.setMax(99);
+        sliderPrice.setOnThumbValueChangeListener(new MultiSlider.OnThumbValueChangeListener() {
+            @Override
+            public void onValueChanged(MultiSlider multiSlider, MultiSlider.Thumb thumb, int thumbIndex, int value) {
+                if (thumbIndex == 0) {
+                    txtPriceStart.setText(String.valueOf(value));
+                } else {
+                    txtPriceEnd.setText(String.valueOf(value));
+                }
+            }
+        });
+        if (mFilter != null) {
+            String priceStart = mFilter.getPriceStart();
+            String priceEnd = mFilter.getPriceEnd();
+            txtPriceStart.setText(priceStart);
+            txtPriceEnd.setText(priceEnd);
+            sliderPrice.getThumb(0).setValue(Integer.valueOf(priceStart));
+            sliderPrice.getThumb(1).setValue(Integer.valueOf(priceEnd));
+        }
+
+        // Setup manufactured date slider
+        sliderManufacturedYear = (MultiSlider) getView().findViewById(R.id.sliderManufacturedYear);
+        txtManufacturedStart = (TextView) getView().findViewById(R.id.txtManufacturedStart);
+        txtManufacturedEnd = (TextView) getView().findViewById(R.id.txtManufacturedEnd);
+        sliderPrice.setMin(0);
+        sliderPrice.setMax(99);
+        sliderManufacturedYear.setOnThumbValueChangeListener(new MultiSlider.OnThumbValueChangeListener() {
+            @Override
+            public void onValueChanged(MultiSlider multiSlider, MultiSlider.Thumb thumb, int thumbIndex, int value) {
+                if (thumbIndex == 0) {
+                    txtManufacturedStart.setText(String.valueOf(value));
+                } else {
+                    txtManufacturedEnd.setText(String.valueOf(value));
+                }
+            }
+        });
+        if (mFilter != null) {
+            String manufacturedYearStart = mFilter.getManufacturedYearStart();
+            String manufacturedYearEnd = mFilter.getManufacturedYearEnd();
+            txtManufacturedStart.setText(manufacturedYearStart);
+            txtManufacturedEnd.setText(manufacturedYearEnd);
+            sliderManufacturedYear.getThumb(0).setValue(Integer.valueOf(manufacturedYearStart));
+            sliderManufacturedYear.getThumb(1).setValue(Integer.valueOf(manufacturedYearEnd));
+        }
+
     }
 
     private List<Brand> getListBrandCondition() {

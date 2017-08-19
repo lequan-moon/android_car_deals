@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.example.quanlm.cardeal.R;
 import com.example.quanlm.cardeal.model.Brand;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,6 +21,7 @@ import java.util.List;
 public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHolder> {
     Context mContext;
     List<Brand> mListBrand;
+    List<BrandViewHolder> mListViewHolder;
 
     public BrandAdapter(Context mContext, List<Brand> mListBrand) {
         this.mContext = mContext;
@@ -35,6 +37,13 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
 
     @Override
     public void onBindViewHolder(final BrandViewHolder holder, int position) {
+        if (mListViewHolder == null) {
+            mListViewHolder = new ArrayList<>();
+        }
+        if (!mListViewHolder.contains(holder)) {
+            mListViewHolder.add(holder);
+        }
+
         final Brand brand = mListBrand.get(position);
         holder.txtBrandName.setText(brand.getBrandName());
         if (brand.isSelected()) {
@@ -64,7 +73,7 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
         return mListBrand;
     }
 
-    public class BrandViewHolder extends RecyclerView.ViewHolder{
+    public class BrandViewHolder extends RecyclerView.ViewHolder {
         TextView txtBrandName;
         ImageView carChecked;
         View itemView;
@@ -74,6 +83,22 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
             this.itemView = itemView;
             txtBrandName = (TextView) itemView.findViewById(R.id.txtBrandName);
             carChecked = (ImageView) itemView.findViewById(R.id.carChecked);
+        }
+    }
+
+    public void clearCondition() {
+        // Reset checked mark
+        if (mListViewHolder != null) {
+            for (int i = 0; i < mListViewHolder.size(); i++) {
+                mListViewHolder.get(i).carChecked.setVisibility(View.INVISIBLE);
+            }
+        }
+
+        // Reset Brand model's checked state to false
+        if (mListBrand != null) {
+            for (int i = 0; i < mListBrand.size(); i++) {
+                mListBrand.get(i).setSelected(false);
+            }
         }
     }
 }

@@ -1,10 +1,12 @@
 package com.example.quanlm.cardeal.model;
 
+import java.io.Serializable;
+
 /**
  * Created by QuanLM on 8/16/2017.
  */
 
-public class Car {
+public class Car implements Serializable{
     String code;
     String name;
     String description;

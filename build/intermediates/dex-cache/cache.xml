@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="C:\Users\MyPC\.android\build-cache\bc7505a6ccedfbfec1c7038f99f57bedb4983d31\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.3"
+        sha1="96436aef5f48b09aca1e0183dfcd7782aa580bd6">
+        <dex dex="D:\AD27\Projects\car_deals\android_car_deals\app\build\intermediates\pre-dexed\debug\classes_3c5e8fa960974e5f0a9a4b4cfd29f894dd5bd8d5.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\MyPC\.android\build-cache\0eaff8191a61963437b0aa8f7ca7e14fb1056e2f\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.3"
+        sha1="fef6aa7ea0bb2d6adf10965d0a5bb8e353517bff">
+        <dex dex="D:\AD27\Projects\car_deals\android_car_deals\app\build\intermediates\pre-dexed\debug\classes_9f456537cf646865558488a8d3cea42189a56b23.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\MyPC\.android\build-cache\92ce483e24e6c1644b7711c17dc708032642a693\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.3"
+        sha1="28d4a4aeb040c9a0fd6eb31b9e0af8bdf6619d5c">
+        <dex dex="D:\AD27\Projects\car_deals\android_car_deals\app\build\intermediates\pre-dexed\debug\classes_768d2e8cf40bfd2393d7a8323bca1fc21ede0b7b.jar" />
+    </item>
+
+</items>
