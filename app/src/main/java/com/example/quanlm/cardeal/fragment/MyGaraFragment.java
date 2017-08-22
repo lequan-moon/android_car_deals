@@ -1,14 +1,28 @@
 package com.example.quanlm.cardeal.fragment;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.ArraySet;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.quanlm.cardeal.ActCarDetail;
 import com.example.quanlm.cardeal.R;
+import com.example.quanlm.cardeal.adapter.CarAdapter;
+import com.example.quanlm.cardeal.configure.Constants;
+import com.example.quanlm.cardeal.model.Car;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,15 +32,9 @@ import com.example.quanlm.cardeal.R;
  * Use the {@link MyGaraFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MyGaraFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class MyGaraFragment extends Fragment implements CarAdapter.OnCarSelectListener {
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    RecyclerView rcvCarList;
 
     private OnFragmentInteractionListener mListener;
 
@@ -45,20 +53,12 @@ public class MyGaraFragment extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static MyGaraFragment newInstance(String param1, String param2) {
         MyGaraFragment fragment = new MyGaraFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -66,6 +66,33 @@ public class MyGaraFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_my_gara, container, false);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        rcvCarList = (RecyclerView) getView().findViewById(R.id.rcvCarList);
+        List<Car> lstCar = new ArrayList<>();
+        lstCar = getListFavoriteCar();
+        CarAdapter adtCar = new CarAdapter(getContext(), lstCar);
+        adtCar.setmCarSelectListener(this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        rcvCarList.setLayoutManager(layoutManager);
+        rcvCarList.setAdapter(adtCar);
+    }
+
+    private List<Car> getListFavoriteCar() {
+        List<Car> lstCar = new ArrayList<>();
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
+        Set<String> favoriteCarCode = sharedPreferences.getStringSet(Constants.FAVORITE, new ArraySet<String>());
+
+        // TODO: Get data from API or something with a set of carCode
+        // Temporary, we create new Car object
+        for (String carCode :
+                favoriteCarCode) {
+            lstCar.add(new Car(carCode, "Xe " + carCode, "Description car " + carCode, "100000000"));
+        }
+        return lstCar;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -90,6 +117,16 @@ public class MyGaraFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onCarSelect(Car car) {
+        Intent itCarDetail = new Intent(getContext(), ActCarDetail.class);
+        Bundle params = new Bundle();
+        params.putSerializable("selected_car", car);
+        itCarDetail.putExtra(Constants.CAR_DETAIL_PARAMS, params);
+        startActivity(itCarDetail);
+        getActivity().overridePendingTransition(R.anim.right_out, R.anim.left_in);
     }
 
     /**

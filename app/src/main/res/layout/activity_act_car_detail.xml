@@ -36,15 +36,15 @@
                 </RelativeLayout>
                 <TextView
                     android:id="@+id/btnBack"
-                    android:text="Back"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:background="@drawable/ic_arrow_back_black_48dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp" />
                 <TextView
                     android:id="@+id/btnShare"
-                    android:text="Share"
+                    android:background="@drawable/ic_share_black_48dp"
                     android:layout_alignParentRight="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_width="48dp"
+                    android:layout_height="48dp" />
             </RelativeLayout>
 
             <!-- Basic information -->
@@ -89,18 +89,18 @@
     </ScrollView>
     <TextView
         android:id="@+id/btnBuy"
-        android:text="BUY"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:background="@drawable/ic_add_shopping_cart_black_48dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_margin="16dp"/>
     <TextView
         android:id="@+id/btnLike"
-        android:text="LIKE"
+        android:background="@drawable/ic_favorite_border_black_48dp"
         android:layout_margin="16dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="48dp"
+        android:layout_height="48dp" />
 </RelativeLayout>

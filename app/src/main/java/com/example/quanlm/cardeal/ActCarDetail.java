@@ -1,5 +1,7 @@
 package com.example.quanlm.cardeal;
 
+import android.content.SharedPreferences;
+import android.support.v4.util.ArraySet;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -7,9 +9,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.quanlm.cardeal.configure.Constants;
 import com.example.quanlm.cardeal.model.Car;
 
-import static com.example.quanlm.cardeal.fragment.SearchListFragment.CAR_DETAIL_PARAMS;
+import java.util.Set;
 
 public class ActCarDetail extends AppCompatActivity {
     ImageView imgCarThumb;
@@ -31,7 +34,7 @@ public class ActCarDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_act_car_detail);
-        Bundle params = getIntent().getBundleExtra(CAR_DETAIL_PARAMS);
+        Bundle params = getIntent().getBundleExtra(Constants.CAR_DETAIL_PARAMS);
         selectedCar = (Car) params.getSerializable("selected_car");
 
         initControls();
@@ -52,6 +55,12 @@ public class ActCarDetail extends AppCompatActivity {
         btnLike = (TextView) findViewById(R.id.btnLike);
 
         txtCarName.setText(selectedCar.getName());
+
+        SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCE, MODE_PRIVATE);
+        Set<String> favoriteCars = sharedPreferences.getStringSet(Constants.FAVORITE, new ArraySet<String>());
+        if (favoriteCars.contains(selectedCar.getCode())) {
+            btnLike.setBackground(getDrawable(R.drawable.ic_favorite_black_48dp));
+        }
     }
 
     @Override
@@ -85,8 +94,35 @@ public class ActCarDetail extends AppCompatActivity {
         btnLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                // Check is added to favorites
+                // If true then remove it from favorites and change background of this button "add to favorites"
+                // If not, add to favorites and change background of this button to "already added to favorites"
+                SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCE, MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                if (isFavorite()) {
+                    Set<String> favoriteCar = sharedPreferences.getStringSet(Constants.FAVORITE, new ArraySet<String>());
+                    favoriteCar.remove(selectedCar.getCode());
+                    editor.putStringSet(Constants.FAVORITE, favoriteCar);
+                    editor.commit();
+                    v.setBackground(getDrawable(R.drawable.ic_favorite_border_black_48dp));
+                } else {
+                    Set<String> favoriteCar = sharedPreferences.getStringSet(Constants.FAVORITE, new ArraySet<String>());
+                    favoriteCar.add(selectedCar.getCode());
+                    editor.putStringSet(Constants.FAVORITE, favoriteCar);
+                    editor.commit();
+                    v.setBackground(getDrawable(R.drawable.ic_favorite_black_48dp));
+                }
             }
         });
+    }
+
+    private boolean isFavorite() {
+        SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCE, MODE_PRIVATE);
+        Set<String> favoriteCar = sharedPreferences.getStringSet(Constants.FAVORITE, new ArraySet<String>());
+        if (favoriteCar.contains(selectedCar.getCode())) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

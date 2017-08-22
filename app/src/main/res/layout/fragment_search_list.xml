@@ -4,17 +4,16 @@
     android:layout_height="match_parent"
     tools:context="com.example.quanlm.cardeal.fragment.SearchListFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rcvCarList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btnSearch"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_gravity="bottom|right|end"
         android:layout_margin="16dp"
-        android:background="@drawable/ic_search_black_36dp"/>
+        android:src="@drawable/ic_search_black_36dp"/>
 
 </FrameLayout>
