@@ -57,7 +57,6 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
      * @param param2 Parameter 2.
      * @return A new instance of fragment SearchListFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static SearchListFragment newInstance(String param1, String param2) {
         SearchListFragment fragment = new SearchListFragment();
         return fragment;
@@ -82,13 +81,6 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
         initEvents();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-
-    }
-
     private void initEvents() {
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,6 +99,8 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
 
     private void initControls(View view) {
         btnSearch = (FloatingActionButton) view.findViewById(R.id.btnSearch);
+
+        // TODO: QuanLM get list car from API or something
         rcvCarList = (RecyclerView) view.findViewById(R.id.rcvCarList);
         List<Car> lstCar = new ArrayList<>();
         lstCar.add(new Car("1", "Xe 1", "Description car 1", "100000000"));
@@ -165,7 +159,7 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
         conditionSearchDialogFragment.dismiss();
         mFilter = filter;
 
-        // TODO: Reload list with received filter condition
+        // TODO: QuanLM Reload list with received filter condition
     }
 
     @Override

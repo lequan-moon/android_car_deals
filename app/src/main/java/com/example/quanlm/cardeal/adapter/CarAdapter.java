@@ -37,7 +37,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
     @Override
     public void onBindViewHolder(CarViewHolder holder, int position) {
         final Car car = lstCar.get(position);
-        // TODO: Get and append car's thumbnail
+        // TODO: QuanLM Get and append car's thumbnail
         holder.txtCarName.setText(car.getName());
         holder.txtDescription.setText(car.getDescription());
         holder.itemView.setOnClickListener(new View.OnClickListener() {

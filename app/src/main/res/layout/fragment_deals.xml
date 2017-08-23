@@ -4,10 +4,15 @@
     android:layout_height="match_parent"
     tools:context="com.example.quanlm.cardeal.fragment.DealsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rcvMyDeals"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Deals" />
-
+        android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btnAddDeal"
+        android:src="@drawable/ic_add_black_48dp"
+        android:layout_margin="16dp"
+        android:layout_gravity="bottom|center"
+        android:layout_width="48dp"
+        android:layout_height="48dp" />
 </FrameLayout>

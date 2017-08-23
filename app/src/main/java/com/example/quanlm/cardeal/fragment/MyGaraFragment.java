@@ -50,7 +50,6 @@ public class MyGaraFragment extends Fragment implements CarAdapter.OnCarSelectLi
      * @param param2 Parameter 2.
      * @return A new instance of fragment MyGaraFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static MyGaraFragment newInstance(String param1, String param2) {
         MyGaraFragment fragment = new MyGaraFragment();
         return fragment;
@@ -86,7 +85,7 @@ public class MyGaraFragment extends Fragment implements CarAdapter.OnCarSelectLi
         SharedPreferences sharedPreferences = getContext().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
         Set<String> favoriteCarCode = sharedPreferences.getStringSet(Constants.FAVORITE, new ArraySet<String>());
 
-        // TODO: Get data from API or something with a set of carCode
+        // TODO: QuanLM Get data from API or something with a set of carCode
         // Temporary, we create new Car object
         for (String carCode :
                 favoriteCarCode) {

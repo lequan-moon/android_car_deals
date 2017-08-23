@@ -16,7 +16,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ActCarDetail"></activity>
+        <activity android:name=".ActCarDetail" />
+        <activity android:name=".ActAddCarDealStep1" />
+        <activity android:name=".ActAddCarDealStep2"></activity>
     </application>
 
 </manifest>
