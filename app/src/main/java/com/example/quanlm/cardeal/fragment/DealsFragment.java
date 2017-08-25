@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.quanlm.cardeal.ActAddCarDealStep;
 import com.example.quanlm.cardeal.ActCarDetail;
 import com.example.quanlm.cardeal.R;
 import com.example.quanlm.cardeal.adapter.CarAdapter;
@@ -89,7 +90,8 @@ public class DealsFragment extends Fragment implements CarAdapter.OnCarSelectLis
         view.findViewById(R.id.btnAddDeal).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: QuanLM add deal action
+                Intent it = new Intent(getContext(), ActAddCarDealStep.class);
+                startActivity(it);
             }
         });
     }
