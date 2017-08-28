@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">CarDeal</string>
+    <string name="car_deal_oAuth_client">596983284900-kf15uhtboqnh7ima34e08qpuib3ln1tr.apps.googleusercontent.com</string>
 
 </resources>

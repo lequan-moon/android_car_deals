@@ -6,6 +6,13 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     tools:context="com.example.quanlm.cardeal.ActAddCarDealStep">
+    <Button
+        android:id="@+id/btnLogin"
+        android:text="LOGIN"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <ScrollView
         android:id="@+id/viewAddCarDealStep1"
@@ -70,7 +77,8 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rcvImages"
                 android:layout_width="match_parent"
-                android:layout_height="64dp"></android.support.v7.widget.RecyclerView>
+                android:layout_height="64dp"
+                android:layout_marginBottom="64dp"></android.support.v7.widget.RecyclerView>
         </LinearLayout>
     </ScrollView>
 
@@ -78,7 +86,41 @@
         android:id="@+id/viewAddCarDealStep2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Car name:" />
+
+            <EditText
+                android:id="@+id/txtCarName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Car description:" />
+
+            <EditText
+                android:id="@+id/txtCarDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

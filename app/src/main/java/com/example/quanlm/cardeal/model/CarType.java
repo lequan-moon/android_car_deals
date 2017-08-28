@@ -9,6 +9,9 @@ public class CarType {
     String carTypeName;
     boolean isChecked = false;
 
+    public CarType() {
+    }
+
     public CarType(String carTypeCode, String carTypeName) {
 
         this.carTypeCode = carTypeCode;

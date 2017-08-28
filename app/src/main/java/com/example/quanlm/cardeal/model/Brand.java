@@ -1,5 +1,7 @@
 package com.example.quanlm.cardeal.model;
 
+import java.util.List;
+
 /**
  * Created by QuanLM on 8/16/2017.
  */
@@ -8,6 +10,9 @@ public class Brand {
     String brandCode;
     String brandName;
     boolean isSelected = false;
+
+    public Brand() {
+    }
 
     public Brand(String brandCode, String brandName) {
         this.brandCode = brandCode;

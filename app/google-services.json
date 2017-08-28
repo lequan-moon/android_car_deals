@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "359704506865",
+    "firebase_url": "https://ad27cardeal.firebaseio.com",
+    "project_id": "ad27cardeal",
+    "storage_bucket": "ad27cardeal.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:359704506865:android:9ff30b6e867c7a97",
+        "android_client_info": {
+          "package_name": "com.example.quanlm.cardeal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "359704506865-e5bb408v8pkgntrhcbshlhkiprm6dlvl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZTnKyhEkO2MOiejPhKkTeDEEhK8PgEb8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
