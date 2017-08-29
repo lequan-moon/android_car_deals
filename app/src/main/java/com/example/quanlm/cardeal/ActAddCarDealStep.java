@@ -14,10 +14,12 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.quanlm.cardeal.adapter.CarThumbAdapter;
 import com.example.quanlm.cardeal.adapter.SingleChoiceBrandAdapter;
 import com.example.quanlm.cardeal.adapter.SingleChoiceCarTypeAdapter;
@@ -58,6 +60,7 @@ public class ActAddCarDealStep extends AppCompatActivity implements CarThumbAdap
     TextView txtCarPrice;
     TextView txtDealerName;
     TextView txtDealerPhoneNumber;
+    ImageView loadingGif;
 
     SingleChoiceBrandAdapter adtBrand;
     SingleChoiceCarTypeAdapter adtCarType;
@@ -135,15 +138,8 @@ public class ActAddCarDealStep extends AppCompatActivity implements CarThumbAdap
         rcvImages.setLayoutManager(carThumbLayoutManager);
         rcvImages.setAdapter(adtCarThumb);
 
-//        viewAddCarStep1.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//            @Override
-//            public void onGlobalLayout() {
-//                paramsStep2 = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-//                paramsStep2.leftMargin = viewAddCarStep1.getWidth();
-//                viewAddCarStep2.setLayoutParams(paramsStep2);
-//            }
-//        });
-
+        loadingGif = (ImageView) findViewById(R.id.loadingGif);
+        Glide.with(this).load(R.drawable.loading).into(loadingGif);
     }
 
     private void initEvents() {
@@ -163,9 +159,6 @@ public class ActAddCarDealStep extends AppCompatActivity implements CarThumbAdap
                 findViewById(R.id.btnNext).setVisibility(View.GONE);
 
                 // Animation
-//                FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-//                viewAddCarStep2.setLayoutParams(params);
-
                 viewAddCarStep1.animate().setListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animation) {
@@ -194,29 +187,6 @@ public class ActAddCarDealStep extends AppCompatActivity implements CarThumbAdap
                     }
                 }).translationX(-viewAddCarStep1.getWidth()).setDuration(ANIMATION_TIME);
 
-//                paramsStep1 = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-//                CountDownTimer countDownTimer = new CountDownTimer(1000, 10) {
-//                    @Override
-//                    public void onTick(long millisUntilFinished) {
-//                        final int width = viewAddCarStep1.getWidth();
-//                        paramsStep1.leftMargin -= width/50;
-//                        if(paramsStep1.leftMargin < -viewAddCarStep1.getWidth()){
-//                            paramsStep1.leftMargin = -viewAddCarStep1.getWidth();
-//                        }
-//                        viewAddCarStep1.setLayoutParams(paramsStep1);
-//
-//                        paramsStep2.leftMargin -= width/50;
-//                        if(paramsStep2.leftMargin < 0){
-//                            paramsStep2.leftMargin = 0;
-//                        }
-//                        viewAddCarStep2.setLayoutParams(paramsStep2);
-//                    }
-//
-//                    @Override
-//                    public void onFinish() {
-//                    }
-//                };
-//                countDownTimer.start();
             }
         });
 
@@ -226,9 +196,6 @@ public class ActAddCarDealStep extends AppCompatActivity implements CarThumbAdap
                 findViewById(R.id.btnDone).setVisibility(View.GONE);
                 findViewById(R.id.btnBack).setVisibility(View.GONE);
                 findViewById(R.id.btnNext).setVisibility(View.VISIBLE);
-
-//                FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-//                viewAddCarStep1.setLayoutParams(params);
 
                 viewAddCarStep2.animate().setListener(new Animator.AnimatorListener() {
                     @Override
@@ -263,6 +230,8 @@ public class ActAddCarDealStep extends AppCompatActivity implements CarThumbAdap
         findViewById(R.id.btnDone).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                loadingGif.setVisibility(View.VISIBLE);
+
                 if (!isStep2Valid()) {
                     Toast.makeText(ActAddCarDealStep.this, "Hay nhap day du thong tin", Toast.LENGTH_SHORT).show();
                     return;
@@ -313,6 +282,7 @@ public class ActAddCarDealStep extends AppCompatActivity implements CarThumbAdap
                                 deals.addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
+                                        loadingGif.setVisibility(View.INVISIBLE);
                                         Toast.makeText(ActAddCarDealStep.this, "Posting done!", Toast.LENGTH_SHORT).show();
                                         Intent itHome = new Intent(ActAddCarDealStep.this, MainActivity.class);
                                         startActivity(itHome);
@@ -320,6 +290,7 @@ public class ActAddCarDealStep extends AppCompatActivity implements CarThumbAdap
 
                                     @Override
                                     public void onCancelled(DatabaseError databaseError) {
+                                        loadingGif.setVisibility(View.INVISIBLE);
                                         Toast.makeText(ActAddCarDealStep.this, "Posting error!", Toast.LENGTH_SHORT).show();
                                     }
                                 });
@@ -370,6 +341,7 @@ public class ActAddCarDealStep extends AppCompatActivity implements CarThumbAdap
                     lstBrand.add(objBrand);
                 }
                 adtBrand.notifyDataSetChanged();
+                loadingGif.setVisibility(View.INVISIBLE);
             }
 
             @Override

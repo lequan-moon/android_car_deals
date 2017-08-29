@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.util.ArraySet;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,12 @@ import com.example.quanlm.cardeal.R;
 import com.example.quanlm.cardeal.adapter.CarAdapter;
 import com.example.quanlm.cardeal.configure.Constants;
 import com.example.quanlm.cardeal.model.Car;
+import com.example.quanlm.cardeal.util.Util;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +42,9 @@ import java.util.Set;
 public class MyGaraFragment extends Fragment implements CarAdapter.OnCarSelectListener {
 
     RecyclerView rcvCarList;
+    FirebaseDatabase mDatabase;
+    List<Car> lstCar;
+    CarAdapter adtCar;
 
     private OnFragmentInteractionListener mListener;
 
@@ -42,14 +52,6 @@ public class MyGaraFragment extends Fragment implements CarAdapter.OnCarSelectLi
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MyGaraFragment.
-     */
     public static MyGaraFragment newInstance(String param1, String param2) {
         MyGaraFragment fragment = new MyGaraFragment();
         return fragment;
@@ -58,6 +60,7 @@ public class MyGaraFragment extends Fragment implements CarAdapter.OnCarSelectLi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mDatabase = FirebaseDatabase.getInstance();
     }
 
     @Override
@@ -71,9 +74,9 @@ public class MyGaraFragment extends Fragment implements CarAdapter.OnCarSelectLi
     public void onStart() {
         super.onStart();
         rcvCarList = (RecyclerView) getView().findViewById(R.id.rcvCarList);
-        List<Car> lstCar = new ArrayList<>();
+        lstCar = new ArrayList<>();
         lstCar = getListFavoriteCar();
-        CarAdapter adtCar = new CarAdapter(getContext(), lstCar);
+        adtCar = new CarAdapter(getContext(), lstCar);
         adtCar.setmCarSelectListener(this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rcvCarList.setLayoutManager(layoutManager);
@@ -81,15 +84,30 @@ public class MyGaraFragment extends Fragment implements CarAdapter.OnCarSelectLi
     }
 
     private List<Car> getListFavoriteCar() {
-        List<Car> lstCar = new ArrayList<>();
+        final List<Car> lstCar = new ArrayList<>();
         SharedPreferences sharedPreferences = getContext().getSharedPreferences(Constants.SHARED_PREFERENCE, Context.MODE_PRIVATE);
-        Set<String> favoriteCarCode = sharedPreferences.getStringSet(Constants.FAVORITE, new ArraySet<String>());
+        Set<String> favoriteCars = sharedPreferences.getStringSet(Constants.FAVORITE, new ArraySet<String>());
 
-        // TODO: QuanLM Get data from API or something with a set of carCode
-        // Temporary, we create new Car object
-        for (String carCode :
-                favoriteCarCode) {
-            lstCar.add(new Car(carCode, "Xe " + carCode, "Description car " + carCode, "100000000"));
+        for (String favoriteCar :
+                favoriteCars) {
+            String dealer = Util.getFavoriteCarDealer(favoriteCar);
+            String carCode = Util.getFavoriteCarCode(favoriteCar);
+            Log.d("MyGara", "dealer: " + dealer);
+            Log.d("MyGara", "carCode: " + carCode);
+            DatabaseReference carRef = mDatabase.getReference(Constants.DEAL_TABLE).child(dealer).child(carCode);
+            carRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Car favoriteCar = dataSnapshot.getValue(Car.class);
+                    lstCar.add(favoriteCar);
+                    adtCar.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
         }
         return lstCar;
     }

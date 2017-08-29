@@ -8,16 +8,24 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.quanlm.cardeal.configure.Constants;
 import com.example.quanlm.cardeal.model.Car;
+import com.example.quanlm.cardeal.util.Util;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Set;
 
 public class ActCarDetail extends AppCompatActivity {
     ImageView imgCarThumb;
     TextView txtCarName;
-    TextView btnBack;
+    TextView txtCarDescription;
     TextView btnShare;
     TextView txtPrice;
     TextView txtRating;
@@ -29,6 +37,8 @@ public class ActCarDetail extends AppCompatActivity {
 
     Car selectedCar;
 
+    FirebaseDatabase mDatabase;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +46,7 @@ public class ActCarDetail extends AppCompatActivity {
         setContentView(R.layout.activity_act_car_detail);
         Bundle params = getIntent().getBundleExtra(Constants.CAR_DETAIL_PARAMS);
         selectedCar = (Car) params.getSerializable("selected_car");
-
+        mDatabase = FirebaseDatabase.getInstance();
         initControls();
         initEvents();
     }
@@ -44,23 +54,32 @@ public class ActCarDetail extends AppCompatActivity {
     private void initControls() {
         imgCarThumb = (ImageView) findViewById(R.id.imgCarThumb);
         txtCarName = (TextView) findViewById(R.id.txtCarName);
+        txtCarDescription = (TextView) findViewById(R.id.txtCarDescription);
         txtPrice = (TextView) findViewById(R.id.txtPrice);
         txtRating = (TextView) findViewById(R.id.txtRating);
         txtArea = (TextView) findViewById(R.id.txtArea);
         txtDealerName = (TextView) findViewById(R.id.txtDealerName);
         txtDealerPhoneNumber = (TextView) findViewById(R.id.txtDealerPhoneNumber);
-        btnBack = (TextView) findViewById(R.id.btnBack);
         btnShare = (TextView) findViewById(R.id.btnShare);
         btnBuy = (TextView) findViewById(R.id.btnBuy);
         btnLike = (TextView) findViewById(R.id.btnLike);
 
+        Glide.with(this).load(R.drawable.loading).into(imgCarThumb);
+
         txtCarName.setText(selectedCar.getName());
+        txtCarDescription.setText(selectedCar.getDescription());
+        txtPrice.setText(selectedCar.getPrice());
+        txtDealerName.setText(selectedCar.getDealerName());
+        txtDealerPhoneNumber.setText(selectedCar.getDealerPhoneNumber());
+
+        Glide.with(this).load(selectedCar.getImages().get(0)).into(imgCarThumb);
 
         SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCE, MODE_PRIVATE);
         Set<String> favoriteCars = sharedPreferences.getStringSet(Constants.FAVORITE, new ArraySet<String>());
-        if (favoriteCars.contains(selectedCar.getCode())) {
+        if (favoriteCars.contains(Util.generateFavoriteString(selectedCar))) {
             btnLike.setBackground(getDrawable(R.drawable.ic_favorite_black_48dp));
         }
+
     }
 
     @Override
@@ -70,13 +89,6 @@ public class ActCarDetail extends AppCompatActivity {
     }
 
     private void initEvents() {
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
         btnShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,16 +110,19 @@ public class ActCarDetail extends AppCompatActivity {
                 // If true then remove it from favorites and change background of this button "add to favorites"
                 // If not, add to favorites and change background of this button to "already added to favorites"
                 SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCE, MODE_PRIVATE);
+                Set<String> favoriteCar = sharedPreferences.getStringSet(Constants.FAVORITE, new ArraySet<String>());
+                if (favoriteCar.size() >= 5) {
+                    Toast.makeText(ActCarDetail.this, "Only 5 deals allowed", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 if (isFavorite()) {
-                    Set<String> favoriteCar = sharedPreferences.getStringSet(Constants.FAVORITE, new ArraySet<String>());
-                    favoriteCar.remove(selectedCar.getCode());
+                    favoriteCar.remove(Util.generateFavoriteString(selectedCar));
                     editor.putStringSet(Constants.FAVORITE, favoriteCar);
                     editor.commit();
                     v.setBackground(getDrawable(R.drawable.ic_favorite_border_black_48dp));
                 } else {
-                    Set<String> favoriteCar = sharedPreferences.getStringSet(Constants.FAVORITE, new ArraySet<String>());
-                    favoriteCar.add(selectedCar.getCode());
+                    favoriteCar.add(Util.generateFavoriteString(selectedCar));
                     editor.putStringSet(Constants.FAVORITE, favoriteCar);
                     editor.commit();
                     v.setBackground(getDrawable(R.drawable.ic_favorite_black_48dp));
@@ -119,7 +134,7 @@ public class ActCarDetail extends AppCompatActivity {
     private boolean isFavorite() {
         SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCE, MODE_PRIVATE);
         Set<String> favoriteCar = sharedPreferences.getStringSet(Constants.FAVORITE, new ArraySet<String>());
-        if (favoriteCar.contains(selectedCar.getCode())) {
+        if (favoriteCar.contains(Util.generateFavoriteString(selectedCar))) {
             return true;
         } else {
             return false;

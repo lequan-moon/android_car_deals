@@ -22,7 +22,6 @@
                     android:layout_height="wrap_content">
                     <ImageView
                         android:id="@+id/imgCarThumb"
-                        android:background="@drawable/no_image_car"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                     <TextView
@@ -35,33 +34,51 @@
                         android:layout_alignParentBottom="true"/>
                 </RelativeLayout>
                 <TextView
-                    android:id="@+id/btnBack"
-                    android:background="@drawable/ic_arrow_back_black_48dp"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp" />
-                <TextView
                     android:id="@+id/btnShare"
                     android:background="@drawable/ic_share_black_48dp"
                     android:layout_alignParentRight="true"
                     android:layout_width="48dp"
                     android:layout_height="48dp" />
             </RelativeLayout>
+            <TextView
+                android:id="@+id/txtCarDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <!-- Basic information -->
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <TextView
-                    android:id="@+id/txtPrice"
-                    android:text="Price"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:text="Rating"
-                    android:id="@+id/txtRating"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:text="Price"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/txtPrice"
+                        android:layout_width="0dp"
+                        android:layout_weight="3"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:text="Rating"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/txtRating"
+                        android:layout_width="0dp"
+                        android:layout_weight="3"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
                 <TextView
                     android:id="@+id/txtArea"
                     android:text="Hanoi"
@@ -74,16 +91,35 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <TextView
-                    android:id="@+id/txtDealerName"
-                    android:text="Dealer name"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:id="@+id/txtDealerPhoneNumber"
-                    android:text="Dealer phone number"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:text="Dealer:"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/txtDealerName"
+                        android:layout_width="0dp"
+                        android:layout_weight="3"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:text="Dealer phone:"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/txtDealerPhoneNumber"
+                        android:text="Dealer name"
+                        android:layout_width="0dp"
+                        android:layout_weight="3"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

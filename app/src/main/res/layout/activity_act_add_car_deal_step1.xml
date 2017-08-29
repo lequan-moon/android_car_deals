@@ -199,5 +199,12 @@
         android:layout_margin="16dp"
         android:src="@drawable/ic_check_black_48dp"
         android:visibility="gone" />
+    <ImageView
+        android:id="@+id/loadingGif"
+        android:src="@drawable/loading"
+        android:background="@android:color/darker_gray"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </FrameLayout>
