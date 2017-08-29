@@ -19,8 +19,14 @@ import com.example.quanlm.cardeal.ActCarDetail;
 import com.example.quanlm.cardeal.R;
 import com.example.quanlm.cardeal.adapter.CarAdapter;
 import com.example.quanlm.cardeal.configure.Constants;
+import com.example.quanlm.cardeal.model.Brand;
 import com.example.quanlm.cardeal.model.Car;
 import com.example.quanlm.cardeal.model.Filter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +47,11 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
 
     Filter mFilter;
     RecyclerView rcvCarList;
-    private int lastFirstVisiblePosition = 0;
+    CarAdapter adtCar;
+    List<Car> lstCar;
     ConditionSearchDialogFragment conditionSearchDialogFragment;
+
+    private FirebaseDatabase mDatabase;
 
 
     public SearchListFragment() {
@@ -65,6 +74,8 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mDatabase = FirebaseDatabase.getInstance();
     }
 
     @Override
@@ -102,19 +113,33 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
 
         // TODO: QuanLM get list car from API or something
         rcvCarList = (RecyclerView) view.findViewById(R.id.rcvCarList);
-        List<Car> lstCar = new ArrayList<>();
-        lstCar.add(new Car("1", "Xe 1", "Description car 1", "100000000"));
-        lstCar.add(new Car("2", "Xe 2", "Description car 2", "100000000"));
-        lstCar.add(new Car("3", "Xe 3", "Description car 3", "100000000"));
-        lstCar.add(new Car("4", "Xe 4", "Description car 4", "100000000"));
-        lstCar.add(new Car("5", "Xe 5", "Description car 5", "100000000"));
-        lstCar.add(new Car("6", "Xe 6", "Description car 6", "100000000"));
-        lstCar.add(new Car("7", "Xe 7", "Description car 7", "100000000"));
-        CarAdapter adtCar = new CarAdapter(getContext(), lstCar);
+        lstCar = new ArrayList<>();
+        adtCar = new CarAdapter(getContext(), lstCar);
         adtCar.setmCarSelectListener(this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rcvCarList.setLayoutManager(layoutManager);
         rcvCarList.setAdapter(adtCar);
+
+        DatabaseReference dealTable = mDatabase.getReference(Constants.DEAL_TABLE);
+        dealTable.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot dealer :
+                        dataSnapshot.getChildren()) {
+                    for (DataSnapshot deal:
+                            dealer.getChildren()) {
+                        Car objDeal = deal.getValue(Car.class);
+                        lstCar.add(objDeal);
+                    }
+                }
+                adtCar.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
 //    @Override

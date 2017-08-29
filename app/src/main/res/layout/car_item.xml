@@ -5,12 +5,11 @@
     <ImageView
         android:id="@+id/imgCarThumb"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/no_image_car"/>
+        android:layout_height="wrap_content"/>
     <LinearLayout
         android:layout_alignBottom="@+id/imgCarThumb"
         android:orientation="vertical"
-        android:background="@color/white"
+        android:background="@android:color/black"
         android:alpha="0.5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -18,12 +17,12 @@
             android:id="@+id/txtCarName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
+            android:textColor="@android:color/white"
             android:textSize="30dp"
             android:text="Car name"/>
         <TextView
             android:id="@+id/txtDescription"
-            android:textColor="@android:color/black"
+            android:textColor="@android:color/white"
             android:text="Description of this car"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

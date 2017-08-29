@@ -1,11 +1,17 @@
 package com.example.quanlm.cardeal;
 
 import android.animation.Animator;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
@@ -17,18 +23,31 @@ import com.example.quanlm.cardeal.adapter.SingleChoiceBrandAdapter;
 import com.example.quanlm.cardeal.adapter.SingleChoiceCarTypeAdapter;
 import com.example.quanlm.cardeal.configure.Constants;
 import com.example.quanlm.cardeal.model.Brand;
+import com.example.quanlm.cardeal.model.Car;
 import com.example.quanlm.cardeal.model.CarType;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.zhihu.matisse.Matisse;
+import com.zhihu.matisse.MimeType;
+import com.zhihu.matisse.engine.impl.GlideEngine;
+import com.zhihu.matisse.internal.entity.CaptureStrategy;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-public class ActAddCarDealStep extends AppCompatActivity {
+public class ActAddCarDealStep extends AppCompatActivity implements CarThumbAdapter.OnCarThumbSelectListener{
 
+    private static final int REQUEST_CODE_CHOOSE = 1;
     RecyclerView rcvBrand;
     RecyclerView rcvCarModel;
     TextView txtNewOld;
@@ -36,17 +55,23 @@ public class ActAddCarDealStep extends AppCompatActivity {
     RecyclerView rcvImages;
     TextView txtCarName;
     TextView txtCarDescription;
+    TextView txtCarPrice;
     TextView txtDealerName;
     TextView txtDealerPhoneNumber;
 
     SingleChoiceBrandAdapter adtBrand;
     SingleChoiceCarTypeAdapter adtCarType;
+    CarThumbAdapter adtCarThumb;
+    List<Uri> lstCarThumb;
 
     View viewAddCarStep1;
     View viewAddCarStep2;
 
     private static final long ANIMATION_TIME = 1000;
+
     private DatabaseReference mDatabase;
+    private StorageReference mStorage;
+    UploadTask uploadTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +84,7 @@ public class ActAddCarDealStep extends AppCompatActivity {
 
     private void initControls() {
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        mStorage = FirebaseStorage.getInstance().getReference();
 
         rcvBrand = (RecyclerView) findViewById(R.id.rcvBrand);
         List<Brand> lstBrand = getListBrandCondition();
@@ -66,7 +92,6 @@ public class ActAddCarDealStep extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 3);
         rcvBrand.setLayoutManager(layoutManager);
         rcvBrand.setAdapter(adtBrand);
-
 
         // TODO: QuanLM process show/hide model when choose Brand
         // TODO: QuanLM Temporary set cartype, need to set to car model
@@ -81,6 +106,7 @@ public class ActAddCarDealStep extends AppCompatActivity {
 
         txtCarName = (TextView) findViewById(R.id.txtCarName);
         txtCarDescription = (TextView) findViewById(R.id.txtCarDescription);
+        txtCarPrice = (TextView) findViewById(R.id.txtCarPrice);
         txtDealerName = (TextView) findViewById(R.id.txtDealerName);
         txtDealerPhoneNumber = (TextView) findViewById(R.id.txtDealerPhoneNumber);
         txtNewOld = (TextView) findViewById(R.id.txtNewOld);
@@ -101,18 +127,10 @@ public class ActAddCarDealStep extends AppCompatActivity {
         viewAddCarStep2 = findViewById(R.id.viewAddCarDealStep2);
 
         rcvImages = (RecyclerView) findViewById(R.id.rcvImages);
-        List<Integer> lstCarThumb = new ArrayList<>();
-        lstCarThumb.add(0);
-        lstCarThumb.add(R.drawable.car_sample_1);
-        lstCarThumb.add(R.drawable.car_sample_2);
-        lstCarThumb.add(R.drawable.car_sample_3);
-        lstCarThumb.add(R.drawable.car_sample_4);
-        lstCarThumb.add(R.drawable.car_sample_5);
-        lstCarThumb.add(R.drawable.car_sample_6);
-        lstCarThumb.add(R.drawable.car_sample_7);
-        lstCarThumb.add(R.drawable.car_sample_8);
-        lstCarThumb.add(R.drawable.car_sample_9);
-        CarThumbAdapter adtCarThumb = new CarThumbAdapter(this, lstCarThumb);
+        lstCarThumb = new ArrayList<>();
+        lstCarThumb.add(null); // First item will be the add image button
+
+        adtCarThumb = new CarThumbAdapter(this, lstCarThumb, this);
         RecyclerView.LayoutManager carThumbLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         rcvImages.setLayoutManager(carThumbLayoutManager);
         rcvImages.setAdapter(adtCarThumb);
@@ -250,23 +268,65 @@ public class ActAddCarDealStep extends AppCompatActivity {
                     return;
                 }
 
-                // Get all input data and post to webservice
-                String brand = ((SingleChoiceBrandAdapter) rcvBrand.getAdapter()).getSelectedBrand().getBrandCode();
-                String carType = ((SingleChoiceCarTypeAdapter) rcvCarModel.getAdapter()).getSelectedCarType().getCarTypeCode();
-                int isNew = switchNewOld.isChecked() ? 1 : 0;
-                String carName = txtCarName.getText().toString();
-                String carDescription = txtCarDescription.getText().toString();
-                String dealerName = txtDealerName.getText().toString();
-                String dealerPhoneNumber = txtDealerPhoneNumber.getText().toString();
-                Toast.makeText(ActAddCarDealStep.this, "brand: " + brand +
-                        " \ncarType:" + carType +
-                        " \nisNew:" + isNew +
-                        " \ncarName:" + carName +
-                        " \ncarDescription:" + carDescription +
-                        " \ndealerName:" + dealerName +
-                        " \ndealerPhoneNumber:" + dealerPhoneNumber +
-                        "", Toast.LENGTH_SHORT).show();
+                // Upload images to storage
+                final List<String> lstUploadedImages = new ArrayList<String>();
+                for (int i = 1; i < lstCarThumb.size(); i++) { // Loop begin from 1 because the 0 index is button add image
+                    Uri image = lstCarThumb.get(i);
+                    String randomImageId = UUID.randomUUID().toString();
+                    uploadTask = mStorage.child(randomImageId + ".jpeg").putFile(image);
+                    uploadTask.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                            lstUploadedImages.add(task.getResult().getDownloadUrl().toString());
+                            Log.d("Firebase", "onComplete: " + mStorage.getActiveUploadTasks().size());
 
+                            // When all images are uploaded then process post deal
+                            if (mStorage.getActiveUploadTasks().size() == 0) {
+                                // Get all input data and post to webservice
+                                String brand = ((SingleChoiceBrandAdapter) rcvBrand.getAdapter()).getSelectedBrand().getBrandCode();
+                                String carType = ((SingleChoiceCarTypeAdapter) rcvCarModel.getAdapter()).getSelectedCarType().getCarTypeCode();
+                                int isNew = switchNewOld.isChecked() ? 1 : 0;
+
+//                                String carName = txtCarName.getText().toString();
+                                String carName = brand + " - " + carType;
+
+//                                String carDescription = txtCarDescription.getText().toString();
+                                String carDescription = brand + " - " + carType + " lorem ipsum blah bloh";
+
+                                // TODO: QuanLM Auth with social account
+                                //txtDealerName.getText().toString();
+                                String dealerName = "QuanLM";
+
+//                                String dealerPhoneNumber = txtDealerPhoneNumber.getText().toString();
+                                String dealerPhoneNumber = "000-0000-0000";
+
+//                                String carPrice = txtCarPrice.getText().toString();
+                                String carPrice = "1.000.000 $";
+
+                                // Post data into database
+                                DatabaseReference deals = mDatabase.child(Constants.DEAL_TABLE);
+                                String carCode = UUID.randomUUID().toString();
+                                Car car = new Car(carCode, carName, carDescription, carPrice, brand, carType, dealerName, dealerPhoneNumber, lstUploadedImages);
+                                deals.child(dealerName).child(carCode).setValue(car);
+
+                                // When post deals is done
+                                deals.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        Toast.makeText(ActAddCarDealStep.this, "Posting done!", Toast.LENGTH_SHORT).show();
+                                        Intent itHome = new Intent(ActAddCarDealStep.this, MainActivity.class);
+                                        startActivity(itHome);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+                                        Toast.makeText(ActAddCarDealStep.this, "Posting error!", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
             }
         });
     }
@@ -343,4 +403,32 @@ public class ActAddCarDealStep extends AppCompatActivity {
         return lstCarType;
     }
 
+    @Override
+    public void onAddCarThumb() {
+        Matisse.from(this)
+                .choose(MimeType.allOf())
+                .countable(true)
+                .maxSelectable(5)
+                .capture(true)
+                .captureStrategy(
+                        new CaptureStrategy(true, "com.example.quanlm.cardeal.fileprovider"))
+                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                .thumbnailScale(0.85f)
+                .imageEngine(new GlideEngine())
+                .forResult(REQUEST_CODE_CHOOSE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_CHOOSE && resultCode == Activity.RESULT_OK && data != null) {
+            //The array list has the image paths of the selected images
+            List<Uri> images = Matisse.obtainResult(data);
+
+            for (int i = 0; i < images.size(); i++) {
+                lstCarThumb.add(images.get(i));
+            }
+            adtCarThumb.notifyDataSetChanged();
+        }
+    }
 }

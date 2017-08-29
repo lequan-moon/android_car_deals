@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.quanlm.cardeal.R;
 import com.example.quanlm.cardeal.model.Car;
 
@@ -40,7 +41,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
         // TODO: QuanLM Get and append car's thumbnail
         holder.txtCarName.setText(car.getName());
         holder.txtDescription.setText(car.getDescription());
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.carItemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mCarSelectListener != null){
@@ -48,6 +49,17 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
                 }
             }
         });
+        if (car.getImages() != null && car.getImages().size() > 0) {
+            Glide.with(mContext)
+                    .load(car.getImages().get(0))
+//                    .override(holder.imgCarThumb.getWidth(), holder.imgCarThumb.getHeight())
+                    .into(holder.imgCarThumb);
+        } else {
+            Glide.with(mContext)
+                    .load(R.drawable.no_image_car)
+                    .fitCenter()
+                    .into(holder.imgCarThumb);
+        }
     }
 
     @Override
@@ -59,14 +71,14 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
         ImageView imgCarThumb;
         TextView txtCarName;
         TextView txtDescription;
-        View itemView;
+        View carItemView;
 
         public CarViewHolder(View itemView) {
             super(itemView);
             imgCarThumb = (ImageView) itemView.findViewById(R.id.imgCarThumb);
             txtCarName = (TextView) itemView.findViewById(R.id.txtCarName);
             txtDescription = (TextView) itemView.findViewById(R.id.txtDescription);
-            this.itemView = itemView;
+            this.carItemView = itemView;
         }
     }
 

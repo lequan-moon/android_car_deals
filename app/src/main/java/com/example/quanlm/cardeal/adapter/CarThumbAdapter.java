@@ -1,6 +1,7 @@
 package com.example.quanlm.cardeal.adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,7 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.example.quanlm.cardeal.R;
+import com.zhihu.matisse.engine.impl.GlideEngine;
 
 import java.util.List;
 
@@ -18,11 +21,13 @@ import java.util.List;
 
 public class CarThumbAdapter extends RecyclerView.Adapter<CarThumbAdapter.CarThumbnail> {
     Context mContext;
-    List<Integer> lstImages;
+    List<Uri> lstImages;
+    OnCarThumbSelectListener onCarThumbSelectListener;
 
-    public CarThumbAdapter(Context mContext, List<Integer> lstImages) {
+    public CarThumbAdapter(Context mContext, List<Uri> lstImages, OnCarThumbSelectListener onCarThumbSelectListener) {
         this.mContext = mContext;
         this.lstImages = lstImages;
+        this.onCarThumbSelectListener = onCarThumbSelectListener;
     }
 
     @Override
@@ -37,7 +42,8 @@ public class CarThumbAdapter extends RecyclerView.Adapter<CarThumbAdapter.CarThu
         if (position == 0) {
             holder.imgCarThumb.setImageDrawable(mContext.getDrawable(R.drawable.ic_add_black_48dp));
         } else {
-            holder.imgCarThumb.setImageDrawable(mContext.getDrawable(lstImages.get(position)));
+//            holder.imgCarThumb.setImageDrawable(mContext.getDrawable(lstImages.get(position)));
+            Glide.with(mContext).load(lstImages.get(position)).into(holder.imgCarThumb);
         }
     }
 
@@ -59,6 +65,7 @@ public class CarThumbAdapter extends RecyclerView.Adapter<CarThumbAdapter.CarThu
                     if (position == 0) {
                         // Add button
                         Log.d("CarThumbnail", "onClick: Click on add button");
+                        onCarThumbSelectListener.onAddCarThumb();
                     } else {
                         // Click on image
                         Log.d("CarThumbnail", "onClick: Click on image");
@@ -66,5 +73,9 @@ public class CarThumbAdapter extends RecyclerView.Adapter<CarThumbAdapter.CarThu
                 }
             });
         }
+    }
+
+    public interface OnCarThumbSelectListener {
+        void onAddCarThumb();
     }
 }
