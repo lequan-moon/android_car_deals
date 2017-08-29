@@ -18,6 +18,11 @@ import com.example.quanlm.cardeal.R;
 import com.example.quanlm.cardeal.adapter.CarAdapter;
 import com.example.quanlm.cardeal.configure.Constants;
 import com.example.quanlm.cardeal.model.Car;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +38,8 @@ import java.util.List;
 public class DealsFragment extends Fragment implements CarAdapter.OnCarSelectListener{
 
     RecyclerView rcvMyDeals;
+    CarAdapter adtCar;
+    private FirebaseDatabase mDatabase;
 
     private OnFragmentInteractionListener mListener;
 
@@ -56,6 +63,7 @@ public class DealsFragment extends Fragment implements CarAdapter.OnCarSelectLis
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mDatabase = FirebaseDatabase.getInstance();
     }
 
     @Override
@@ -75,11 +83,28 @@ public class DealsFragment extends Fragment implements CarAdapter.OnCarSelectLis
     private void initControls(View view) {
         rcvMyDeals = (RecyclerView) view.findViewById(R.id.rcvMyDeals);
 
-        // TODO: QuanLM get my deals from API or something
-        List<Car> lstCar = new ArrayList<>();
-        lstCar.add(new Car("1", "Xe 1", "Description car 1", "100000000"));
-        lstCar.add(new Car("2", "Xe 2", "Description car 2", "100000000"));
-        CarAdapter adtCar = new CarAdapter(getContext(), lstCar);
+        final List<Car> lstCar = new ArrayList<>();
+
+        // TODO: QuanLM replace fixed username with social login
+        DatabaseReference myDeals = mDatabase.getReference(Constants.DEAL_TABLE).child("QuanLM");
+        myDeals.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot deal:
+                        dataSnapshot.getChildren()) {
+                    Car objDeal = deal.getValue(Car.class);
+                    lstCar.add(objDeal);
+                }
+                adtCar.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        adtCar = new CarAdapter(getContext(), lstCar);
         adtCar.setmCarSelectListener(this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rcvMyDeals.setLayoutManager(layoutManager);
