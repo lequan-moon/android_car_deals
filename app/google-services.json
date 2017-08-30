@@ -15,6 +15,50 @@
       },
       "oauth_client": [
         {
+          "client_id": "359704506865-ajsjofe93fso1gcu83u0qb4m78gi62gl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.quanlm.cardeal",
+            "certificate_hash": "264b46561810b7c4498c19aae9438db8adfdf5ee"
+          }
+        },
+        {
+          "client_id": "359704506865-e5bb408v8pkgntrhcbshlhkiprm6dlvl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZTnKyhEkO2MOiejPhKkTeDEEhK8PgEb8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "359704506865-e5bb408v8pkgntrhcbshlhkiprm6dlvl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:359704506865:android:681e2b82974ad325",
+        "android_client_info": {
+          "package_name": "com.example.quanlm.firebasedatabasedemo"
+        }
+      },
+      "oauth_client": [
+        {
           "client_id": "359704506865-e5bb408v8pkgntrhcbshlhkiprm6dlvl.apps.googleusercontent.com",
           "client_type": 3
         }
