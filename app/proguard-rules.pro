@@ -33,3 +33,5 @@
 # for DexGuard only
 -keepresourcexmlelements manifest/application/meta-data@value=GlideModule
 -dontwarn com.bumptech.glide.**
+-keepattributes Signature
+-keepattributes *Annotation*

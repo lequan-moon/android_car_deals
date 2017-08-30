@@ -111,7 +111,6 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
     private void initControls(View view) {
         btnSearch = (FloatingActionButton) view.findViewById(R.id.btnSearch);
 
-        // TODO: QuanLM get list car from API or something
         rcvCarList = (RecyclerView) view.findViewById(R.id.rcvCarList);
         lstCar = new ArrayList<>();
         adtCar = new CarAdapter(getContext(), lstCar);

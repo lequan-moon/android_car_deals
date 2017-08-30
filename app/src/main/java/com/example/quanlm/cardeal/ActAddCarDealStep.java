@@ -29,6 +29,8 @@ import com.example.quanlm.cardeal.model.Car;
 import com.example.quanlm.cardeal.model.CarType;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -50,6 +52,7 @@ import java.util.UUID;
 public class ActAddCarDealStep extends AppCompatActivity implements CarThumbAdapter.OnCarThumbSelectListener{
 
     private static final int REQUEST_CODE_CHOOSE = 1;
+    private static final int REQUEST_CODE_LOGIN = 2;
     RecyclerView rcvBrand;
     RecyclerView rcvCarModel;
     TextView txtNewOld;
@@ -72,6 +75,8 @@ public class ActAddCarDealStep extends AppCompatActivity implements CarThumbAdap
 
     private static final long ANIMATION_TIME = 1000;
 
+    private FirebaseAuth mAuth;
+    FirebaseUser currentUser;
     private DatabaseReference mDatabase;
     private StorageReference mStorage;
     UploadTask uploadTask;
@@ -88,6 +93,7 @@ public class ActAddCarDealStep extends AppCompatActivity implements CarThumbAdap
     private void initControls() {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mStorage = FirebaseStorage.getInstance().getReference();
+        mAuth = FirebaseAuth.getInstance();
 
         rcvBrand = (RecyclerView) findViewById(R.id.rcvBrand);
         List<Brand> lstBrand = getListBrandCondition();
@@ -96,8 +102,6 @@ public class ActAddCarDealStep extends AppCompatActivity implements CarThumbAdap
         rcvBrand.setLayoutManager(layoutManager);
         rcvBrand.setAdapter(adtBrand);
 
-        // TODO: QuanLM process show/hide model when choose Brand
-        // TODO: QuanLM Temporary set cartype, need to set to car model
         findViewById(R.id.layoutCarModel);
 
         rcvCarModel = (RecyclerView) findViewById(R.id.rcvCarModel);
@@ -124,7 +128,6 @@ public class ActAddCarDealStep extends AppCompatActivity implements CarThumbAdap
                 }
             }
         });
-
 
         viewAddCarStep1 = findViewById(R.id.viewAddCarDealStep1);
         viewAddCarStep2 = findViewById(R.id.viewAddCarDealStep2);
@@ -264,13 +267,15 @@ public class ActAddCarDealStep extends AppCompatActivity implements CarThumbAdap
 
                                 // TODO: QuanLM Auth with social account
                                 //txtDealerName.getText().toString();
-                                String dealerName = "QuanLM";
+                                String dealerName = currentUser.getUid();
 
 //                                String dealerPhoneNumber = txtDealerPhoneNumber.getText().toString();
-                                String dealerPhoneNumber = "000-0000-0000";
+                                String dealerPhoneNumber = currentUser.getPhoneNumber();
 
-//                                String carPrice = txtCarPrice.getText().toString();
-                                String carPrice = "1.000.000 $";
+                                String carPrice = txtCarPrice.getText().toString();
+                                if ("".equals(carPrice)) {
+                                    carPrice = "Contact for detail";
+                                }
 
                                 // Post data into database
                                 DatabaseReference deals = mDatabase.child(Constants.DEAL_TABLE);
@@ -300,6 +305,16 @@ public class ActAddCarDealStep extends AppCompatActivity implements CarThumbAdap
                 }
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) {
+            Intent itLogin = new Intent(this, ActLogin.class);
+            startActivityForResult(itLogin, REQUEST_CODE_LOGIN);
+        }
     }
 
     private boolean isStep2Valid() {
@@ -393,6 +408,8 @@ public class ActAddCarDealStep extends AppCompatActivity implements CarThumbAdap
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        // Choose image
         if (requestCode == REQUEST_CODE_CHOOSE && resultCode == Activity.RESULT_OK && data != null) {
             //The array list has the image paths of the selected images
             List<Uri> images = Matisse.obtainResult(data);
@@ -401,6 +418,11 @@ public class ActAddCarDealStep extends AppCompatActivity implements CarThumbAdap
                 lstCarThumb.add(images.get(i));
             }
             adtCarThumb.notifyDataSetChanged();
+        }
+
+        // Login
+        if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
+
         }
     }
 }
