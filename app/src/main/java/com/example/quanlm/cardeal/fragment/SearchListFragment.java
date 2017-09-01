@@ -75,7 +75,7 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mDatabase = FirebaseDatabase.getInstance();
+
     }
 
     @Override
@@ -109,6 +109,9 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
     }
 
     private void initControls(View view) {
+
+        mDatabase = FirebaseDatabase.getInstance();
+
         btnSearch = (FloatingActionButton) view.findViewById(R.id.btnSearch);
 
         rcvCarList = (RecyclerView) view.findViewById(R.id.rcvCarList);

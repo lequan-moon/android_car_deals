@@ -90,24 +90,26 @@ public class MyGaraFragment extends Fragment implements CarAdapter.OnCarSelectLi
 
         for (String favoriteCar :
                 favoriteCars) {
-            String dealer = Util.getFavoriteCarDealer(favoriteCar);
-            String carCode = Util.getFavoriteCarCode(favoriteCar);
-            Log.d("MyGara", "dealer: " + dealer);
-            Log.d("MyGara", "carCode: " + carCode);
-            DatabaseReference carRef = mDatabase.getReference(Constants.DEAL_TABLE).child(dealer).child(carCode);
-            carRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    Car favoriteCar = dataSnapshot.getValue(Car.class);
-                    lstCar.add(favoriteCar);
-                    adtCar.notifyDataSetChanged();
-                }
+            if (favoriteCar.indexOf("@") > 0) {
+                String dealer = Util.getFavoriteCarDealer(favoriteCar);
+                String carCode = Util.getFavoriteCarCode(favoriteCar);
+                Log.d("MyGara", "dealer: " + dealer);
+                Log.d("MyGara", "carCode: " + carCode);
+                DatabaseReference carRef = mDatabase.getReference(Constants.DEAL_TABLE).child(dealer).child(carCode);
+                carRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Car favoriteCar = dataSnapshot.getValue(Car.class);
+                        lstCar.add(favoriteCar);
+                        adtCar.notifyDataSetChanged();
+                    }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
-                }
-            });
+                    }
+                });
+            }
         }
         return lstCar;
     }

@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "596983284900-g947ijp8mofls464lc4uk062pa51sh3f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.quanlm.cardeal",
+            "certificate_hash": "264b46561810b7c4498c19aae9438db8adfdf5ee"
+          }
+        },
+        {
           "client_id": "596983284900-e53s4o00ijdimu5oieujb46svo4e7dta.apps.googleusercontent.com",
           "client_type": 3
         },

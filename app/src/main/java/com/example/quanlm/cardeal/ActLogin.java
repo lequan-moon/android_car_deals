@@ -44,7 +44,7 @@ public class ActLogin extends AppCompatActivity implements GoogleApiClient.OnCon
 
         txtNotification = (TextView) findViewById(R.id.txtNotification);
         btnLoginGoogle = (SignInButton) findViewById(R.id.btnLoginGoogle);
-        btnSignOut = (Button) findViewById(R.id.btnSignOut);
+//        btnSignOut = (Button) findViewById(R.id.btnSignOut);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.car_deal_oAuth_client))
                 .requestEmail()
@@ -61,12 +61,12 @@ public class ActLogin extends AppCompatActivity implements GoogleApiClient.OnCon
                 signIn();
             }
         });
-        btnSignOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signout();
-            }
-        });
+//        btnSignOut.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                signout();
+//            }
+//        });
     }
 
     private void signout() {
