@@ -11,6 +11,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.daimajia.slider.library.SliderLayout;
+import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.example.quanlm.cardeal.configure.Constants;
 import com.example.quanlm.cardeal.model.Car;
 import com.example.quanlm.cardeal.util.Util;
@@ -23,7 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.Set;
 
 public class ActCarDetail extends AppCompatActivity {
-    ImageView imgCarThumb;
+    SliderLayout slider;
     TextView txtCarName;
     TextView txtCarDescription;
     TextView btnShare;
@@ -52,7 +54,7 @@ public class ActCarDetail extends AppCompatActivity {
     }
 
     private void initControls() {
-        imgCarThumb = (ImageView) findViewById(R.id.imgCarThumb);
+        slider = (SliderLayout) findViewById(R.id.slider);
         txtCarName = (TextView) findViewById(R.id.txtCarName);
         txtCarDescription = (TextView) findViewById(R.id.txtCarDescription);
         txtPrice = (TextView) findViewById(R.id.txtPrice);
@@ -64,15 +66,20 @@ public class ActCarDetail extends AppCompatActivity {
         btnBuy = (TextView) findViewById(R.id.btnBuy);
         btnLike = (TextView) findViewById(R.id.btnLike);
 
-        Glide.with(this).load(R.drawable.loading).into(imgCarThumb);
-
         txtCarName.setText(selectedCar.getName());
         txtCarDescription.setText(selectedCar.getDescription());
         txtPrice.setText(selectedCar.getPrice());
-        txtDealerName.setText(selectedCar.getDealerName());
+        txtDealerName.setText(selectedCar.getDealerDisplayName());
         txtDealerPhoneNumber.setText(selectedCar.getDealerPhoneNumber());
 
-        Glide.with(this).load(selectedCar.getImages().get(0)).into(imgCarThumb);
+        if (selectedCar.getImages() != null && selectedCar.getImages().size() > 0) {
+            for (int i = 0; i < selectedCar.getImages().size(); i++) {
+                DefaultSliderView slide = new DefaultSliderView(this);
+                slide.image(selectedCar.getImages().get(i));
+                slider.addSlider(slide);
+            }
+        }
+//        Glide.with(this).load(selectedCar.getImages().get(0)).into(imgCarThumb);
 
         SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCE, MODE_PRIVATE);
         Set<String> favoriteCars = sharedPreferences.getStringSet(Constants.FAVORITE, new ArraySet<String>());
@@ -139,5 +146,21 @@ public class ActCarDetail extends AppCompatActivity {
         } else {
             return false;
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (selectedCar.getImages().size() > 1) {
+            slider.startAutoCycle();
+        } else {
+            slider.stopAutoCycle();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        slider.stopAutoCycle();
     }
 }

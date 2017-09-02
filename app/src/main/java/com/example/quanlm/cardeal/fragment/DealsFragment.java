@@ -18,6 +18,8 @@ import com.example.quanlm.cardeal.R;
 import com.example.quanlm.cardeal.adapter.CarAdapter;
 import com.example.quanlm.cardeal.configure.Constants;
 import com.example.quanlm.cardeal.model.Car;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,7 +41,9 @@ public class DealsFragment extends Fragment implements CarAdapter.OnCarSelectLis
 
     RecyclerView rcvMyDeals;
     CarAdapter adtCar;
+    List<Car> lstCar;
     private FirebaseDatabase mDatabase;
+    private FirebaseAuth mAuth;
 
     private OnFragmentInteractionListener mListener;
 
@@ -64,6 +68,7 @@ public class DealsFragment extends Fragment implements CarAdapter.OnCarSelectLis
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mDatabase = FirebaseDatabase.getInstance();
+        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -80,29 +85,35 @@ public class DealsFragment extends Fragment implements CarAdapter.OnCarSelectLis
         initEvents(view);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            DatabaseReference myDeals = mDatabase.getReference(Constants.DEAL_TABLE).child(currentUser.getUid());
+            myDeals.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot deal:
+                            dataSnapshot.getChildren()) {
+                        Car objDeal = deal.getValue(Car.class);
+                        lstCar.add(objDeal);
+                    }
+                    adtCar.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
+
     private void initControls(View view) {
         rcvMyDeals = (RecyclerView) view.findViewById(R.id.rcvMyDeals);
 
-        final List<Car> lstCar = new ArrayList<>();
-
-        // TODO: QuanLM replace fixed username with social login
-        DatabaseReference myDeals = mDatabase.getReference(Constants.DEAL_TABLE).child("QuanLM");
-        myDeals.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot deal:
-                        dataSnapshot.getChildren()) {
-                    Car objDeal = deal.getValue(Car.class);
-                    lstCar.add(objDeal);
-                }
-                adtCar.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        lstCar = new ArrayList<>();
 
         adtCar = new CarAdapter(getContext(), lstCar);
         adtCar.setmCarSelectListener(this);

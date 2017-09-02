@@ -9,7 +9,7 @@ import java.util.List;
  * Created by QuanLM on 8/16/2017.
  */
 
-public class Car implements Serializable{
+public class Car implements Serializable {
     String code;
     String name;
     String description;
@@ -19,6 +19,8 @@ public class Car implements Serializable{
     String dealerName;
     String dealerPhoneNumber;
     List<String> images;
+
+    String dealerDisplayName;
 
     public Car() {
     }
@@ -30,7 +32,16 @@ public class Car implements Serializable{
         this.price = price;
     }
 
-    public Car(String code, String name, String description, String price, String brand, String carType, String dealerName, String dealerPhoneNumber, List<String> images) {
+    public Car(String code,
+               String name,
+               String description,
+               String price,
+               String brand,
+               String carType,
+               String dealerName,
+               String dealerPhoneNumber,
+               List<String> images,
+               String dealerDisplayName) {
         this.code = code;
         this.name = name;
         this.description = description;
@@ -40,6 +51,15 @@ public class Car implements Serializable{
         this.dealerName = dealerName;
         this.dealerPhoneNumber = dealerPhoneNumber;
         this.images = images;
+        this.dealerDisplayName = dealerDisplayName;
+    }
+
+    public String getDealerDisplayName() {
+        return dealerDisplayName;
+    }
+
+    public void setDealerDisplayName(String dealerDisplayName) {
+        this.dealerDisplayName = dealerDisplayName;
     }
 
     public String getCode() {

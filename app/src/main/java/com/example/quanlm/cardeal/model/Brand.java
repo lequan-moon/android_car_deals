@@ -1,7 +1,5 @@
 package com.example.quanlm.cardeal.model;
 
-import java.util.List;
-
 /**
  * Created by QuanLM on 8/16/2017.
  */
@@ -10,6 +8,7 @@ public class Brand {
     String brandCode;
     String brandName;
     boolean isSelected = false;
+    String thumbnail;
 
     public Brand() {
     }
@@ -41,5 +40,13 @@ public class Brand {
 
     public void setSelected(boolean selected) {
         isSelected = selected;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
     }
 }

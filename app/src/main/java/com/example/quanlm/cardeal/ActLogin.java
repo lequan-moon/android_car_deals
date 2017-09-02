@@ -30,7 +30,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 public class ActLogin extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
     TextView txtNotification;
     SignInButton btnLoginGoogle;
-    Button btnSignOut;
+    Button btnSkip;
 
     private FirebaseAuth mAuth;
     private static final String TAG = "GoogleActivity";
@@ -61,6 +61,17 @@ public class ActLogin extends AppCompatActivity implements GoogleApiClient.OnCon
                 signIn();
             }
         });
+
+        btnSkip = (Button) findViewById(R.id.btnSkip);
+        btnSkip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Skip login then redirect user back to Main Activity
+                Intent itHome = new Intent(ActLogin.this, MainActivity.class);
+                startActivity(itHome);
+            }
+        });
+
 //        btnSignOut.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -75,7 +86,6 @@ public class ActLogin extends AppCompatActivity implements GoogleApiClient.OnCon
                     @Override
                     public void onResult(Status status) {
                         Toast.makeText(ActLogin.this, "Logged out!", Toast.LENGTH_SHORT).show();
-                        txtNotification.setText("");
                     }
                 });
     }
@@ -141,8 +151,6 @@ public class ActLogin extends AppCompatActivity implements GoogleApiClient.OnCon
             txtNotification.setText(currentUser.getDisplayName());
             setResult(RESULT_OK);
             finish();
-        } else {
-            txtNotification.setText("Login fail!");
         }
     }
 

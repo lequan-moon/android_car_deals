@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.quanlm.cardeal.R;
 import com.example.quanlm.cardeal.model.Brand;
 
@@ -50,6 +51,11 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
             holder.carChecked.setVisibility(View.VISIBLE);
         }
 
+        Glide.with(mContext)
+                .load(brand.getThumbnail())
+                .fitCenter()
+                .into(holder.imgBrandThumb);
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,6 +80,7 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
     }
 
     public class BrandViewHolder extends RecyclerView.ViewHolder {
+        ImageView imgBrandThumb;
         TextView txtBrandName;
         ImageView carChecked;
         View itemView;
@@ -82,6 +89,7 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
             super(itemView);
             this.itemView = itemView;
             txtBrandName = (TextView) itemView.findViewById(R.id.txtBrandName);
+            imgBrandThumb = (ImageView) itemView.findViewById(R.id.imgBrandThumb);
             carChecked = (ImageView) itemView.findViewById(R.id.carChecked);
         }
     }

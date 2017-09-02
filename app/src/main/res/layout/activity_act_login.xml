@@ -11,16 +11,25 @@
     android:orientation="vertical"
     tools:context="com.example.quanlm.cardeal.ActLogin">
     <TextView
+        android:text="Bạn cần login để sử dụng chức năng"
         android:id="@+id/txtNotification"
+        android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/btnLoginGoogle"
+    <LinearLayout
         android:layout_gravity="center"
+        android:orientation="horizontal"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <!--<Button-->
-        <!--android:id="@+id/btnSignOut"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content" />-->
+        android:layout_height="wrap_content">
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/btnLoginGoogle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:text="Skip"
+            android:id="@+id/btnSkip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
 </LinearLayout>

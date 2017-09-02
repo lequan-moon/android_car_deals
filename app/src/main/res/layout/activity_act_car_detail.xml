@@ -20,15 +20,18 @@
                     android:id="@+id/layoutIntroduction"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                    <ImageView
-                        android:id="@+id/imgCarThumb"
+                    <com.daimajia.slider.library.SliderLayout
+                        android:id="@+id/slider"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="200dp"/>
                     <TextView
                         android:text="Car Name"
                         android:id="@+id/txtCarName"
                         android:padding="16dp"
-                        android:background="@color/colorPrimary"
+                        android:textColor="@android:color/white"
+                        android:textSize="30dp"
+                        android:background="@android:color/black"
+                        android:alpha="0.5"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"/>

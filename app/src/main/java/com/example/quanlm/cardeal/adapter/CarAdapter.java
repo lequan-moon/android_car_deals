@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.daimajia.slider.library.SliderLayout;
+import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.example.quanlm.cardeal.R;
 import com.example.quanlm.cardeal.model.Car;
 
@@ -49,9 +51,12 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
             }
         });
         if (car.getImages() != null && car.getImages().size() > 0) {
+
             Glide.with(mContext)
                     .load(car.getImages().get(0))
-//                    .override(holder.imgCarThumb.getWidth(), holder.imgCarThumb.getHeight())
+                    .placeholder(R.drawable.no_image_car)
+//                    .centerCrop()
+                    .fitCenter()
                     .into(holder.imgCarThumb);
         } else {
             Glide.with(mContext)
@@ -71,12 +76,14 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
         TextView txtCarName;
         TextView txtDescription;
         View carItemView;
+        SliderLayout slider;
 
         public CarViewHolder(View itemView) {
             super(itemView);
             imgCarThumb = (ImageView) itemView.findViewById(R.id.imgCarThumb);
             txtCarName = (TextView) itemView.findViewById(R.id.txtCarName);
             txtDescription = (TextView) itemView.findViewById(R.id.txtDescription);
+            slider = (SliderLayout) itemView.findViewById(R.id.slider);
             this.carItemView = itemView;
         }
     }

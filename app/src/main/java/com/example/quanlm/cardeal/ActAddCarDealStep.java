@@ -4,9 +4,11 @@ import android.animation.Animator;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,6 +29,7 @@ import com.example.quanlm.cardeal.configure.Constants;
 import com.example.quanlm.cardeal.model.Brand;
 import com.example.quanlm.cardeal.model.Car;
 import com.example.quanlm.cardeal.model.CarType;
+import com.example.quanlm.cardeal.util.Util;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -49,7 +52,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class ActAddCarDealStep extends AppCompatActivity implements CarThumbAdapter.OnCarThumbSelectListener{
+public class ActAddCarDealStep extends AppCompatActivity implements CarThumbAdapter.OnCarThumbSelectListener {
 
     private static final int REQUEST_CODE_CHOOSE = 1;
     private static final int REQUEST_CODE_LOGIN = 2;
@@ -72,6 +75,8 @@ public class ActAddCarDealStep extends AppCompatActivity implements CarThumbAdap
 
     View viewAddCarStep1;
     View viewAddCarStep2;
+
+    List<String> lstUploadedImages;
 
     private static final long ANIMATION_TIME = 1000;
 
@@ -161,6 +166,14 @@ public class ActAddCarDealStep extends AppCompatActivity implements CarThumbAdap
                 findViewById(R.id.btnBack).setVisibility(View.VISIBLE);
                 findViewById(R.id.btnNext).setVisibility(View.GONE);
 
+                currentUser = mAuth.getCurrentUser();
+                txtDealerName.setText(currentUser.getDisplayName());
+                txtDealerPhoneNumber.setText(currentUser.getPhoneNumber());
+                String brand = ((SingleChoiceBrandAdapter) rcvBrand.getAdapter()).getSelectedBrand().getBrandCode();
+                String carType = ((SingleChoiceCarTypeAdapter) rcvCarModel.getAdapter()).getSelectedCarType().getCarTypeCode();
+                txtCarDescription.setText(brand + " - " + carType + " lorem ipsum blah bloh");
+                txtCarName.setText(brand + " - " + carType);
+
                 // Animation
                 viewAddCarStep1.animate().setListener(new Animator.AnimatorListener() {
                     @Override
@@ -233,75 +246,34 @@ public class ActAddCarDealStep extends AppCompatActivity implements CarThumbAdap
         findViewById(R.id.btnDone).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadingGif.setVisibility(View.VISIBLE);
 
                 if (!isStep2Valid()) {
                     Toast.makeText(ActAddCarDealStep.this, "Hay nhap day du thong tin", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
+                // UI
+                loadingGif.setVisibility(View.VISIBLE);
+                findViewById(R.id.btnNext).setVisibility(View.INVISIBLE);
+                findViewById(R.id.btnBack).setVisibility(View.INVISIBLE);
+                findViewById(R.id.btnDone).setVisibility(View.INVISIBLE);
+
+
                 // Upload images to storage
-                final List<String> lstUploadedImages = new ArrayList<String>();
+                // When upload task is done then post data
+                lstUploadedImages = new ArrayList<String>();
                 for (int i = 1; i < lstCarThumb.size(); i++) { // Loop begin from 1 because the 0 index is button add image
                     Uri image = lstCarThumb.get(i);
                     String randomImageId = UUID.randomUUID().toString();
-                    uploadTask = mStorage.child(randomImageId + ".jpeg").putFile(image);
-                    uploadTask.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                            lstUploadedImages.add(task.getResult().getDownloadUrl().toString());
-                            Log.d("Firebase", "onComplete: " + mStorage.getActiveUploadTasks().size());
 
-                            // When all images are uploaded then process post deal
-                            if (mStorage.getActiveUploadTasks().size() == 0) {
-                                // Get all input data and post to webservice
-                                String brand = ((SingleChoiceBrandAdapter) rcvBrand.getAdapter()).getSelectedBrand().getBrandCode();
-                                String carType = ((SingleChoiceCarTypeAdapter) rcvCarModel.getAdapter()).getSelectedCarType().getCarTypeCode();
-                                int isNew = switchNewOld.isChecked() ? 1 : 0;
-
-//                                String carName = txtCarName.getText().toString();
-                                String carName = brand + " - " + carType;
-
-//                                String carDescription = txtCarDescription.getText().toString();
-                                String carDescription = brand + " - " + carType + " lorem ipsum blah bloh";
-
-                                // TODO: QuanLM Auth with social account
-                                //txtDealerName.getText().toString();
-                                String dealerName = currentUser.getUid();
-
-//                                String dealerPhoneNumber = txtDealerPhoneNumber.getText().toString();
-                                String dealerPhoneNumber = currentUser.getPhoneNumber();
-
-                                String carPrice = txtCarPrice.getText().toString();
-                                if ("".equals(carPrice)) {
-                                    carPrice = "Contact for detail";
-                                }
-
-                                // Post data into database
-                                DatabaseReference deals = mDatabase.child(Constants.DEAL_TABLE);
-                                String carCode = UUID.randomUUID().toString();
-                                Car car = new Car(carCode, carName, carDescription, carPrice, brand, carType, dealerName, dealerPhoneNumber, lstUploadedImages);
-                                deals.child(dealerName).child(carCode).setValue(car);
-
-                                // When post deals is done
-                                deals.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        loadingGif.setVisibility(View.INVISIBLE);
-                                        Toast.makeText(ActAddCarDealStep.this, "Posting done!", Toast.LENGTH_SHORT).show();
-                                        Intent itHome = new Intent(ActAddCarDealStep.this, MainActivity.class);
-                                        startActivity(itHome);
-                                    }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-                                        loadingGif.setVisibility(View.INVISIBLE);
-                                        Toast.makeText(ActAddCarDealStep.this, "Posting error!", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            }
-                        }
-                    });
+//                    uploadTask = mStorage.child(randomImageId + ".jpeg").putFile(image);
+                    File resizedFile = Util.saveBitmapToFile(new File(image.getPath()));
+                    if (resizedFile != null) {
+                        uploadTask = mStorage.child(randomImageId + ".jpeg").putFile(Uri.fromFile(resizedFile));
+                    } else {
+                        uploadTask = mStorage.child(randomImageId + ".jpeg").putFile(image);
+                    }
+                    uploadTask.addOnCompleteListener(new UploadCompleteListener());
                 }
             }
         });
@@ -423,6 +395,75 @@ public class ActAddCarDealStep extends AppCompatActivity implements CarThumbAdap
         // Login
         if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
 
+        }
+    }
+
+    private class UploadCompleteListener implements OnCompleteListener<UploadTask.TaskSnapshot> {
+
+        @Override
+        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+            lstUploadedImages.add(task.getResult().getDownloadUrl().toString());
+            Log.d("Firebase", "onComplete: " + mStorage.getActiveUploadTasks().size());
+
+            // When all images are uploaded then process post deal
+            if (mStorage.getActiveUploadTasks().size() == 0) {
+                String brand = ((SingleChoiceBrandAdapter) rcvBrand.getAdapter()).getSelectedBrand().getBrandCode();
+                String carType = ((SingleChoiceCarTypeAdapter) rcvCarModel.getAdapter()).getSelectedCarType().getCarTypeCode();
+                // Get all input data and post to webservice
+                int isNew = switchNewOld.isChecked() ? 1 : 0;
+
+                String carName = txtCarName.getText().toString();
+
+                String carDescription = txtCarDescription.getText().toString();
+
+                String dealerName = currentUser.getUid();
+                String displayName = txtDealerName.getText().toString();
+
+                String dealerPhoneNumber = txtDealerPhoneNumber.getText().toString();
+
+                String carPrice = txtCarPrice.getText().toString();
+                if ("".equals(carPrice)) {
+                    carPrice = "Contact for detail";
+                }
+
+                // Post data into database
+                DatabaseReference deals = mDatabase.child(Constants.DEAL_TABLE);
+                String carCode = UUID.randomUUID().toString();
+                Car car = new Car(carCode,
+                        carName,
+                        carDescription,
+                        carPrice,
+                        brand,
+                        carType,
+                        dealerName,
+                        dealerPhoneNumber,
+                        lstUploadedImages,
+                        displayName);
+                deals.child(dealerName).child(carCode).setValue(car);
+
+                // When post deals is done
+                deals.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        loadingGif.setVisibility(View.INVISIBLE);
+                        findViewById(R.id.btnNext).setVisibility(View.VISIBLE);
+                        findViewById(R.id.btnBack).setVisibility(View.VISIBLE);
+                        findViewById(R.id.btnDone).setVisibility(View.VISIBLE);
+                        Toast.makeText(ActAddCarDealStep.this, "Posting done!", Toast.LENGTH_SHORT).show();
+                        Intent itHome = new Intent(ActAddCarDealStep.this, MainActivity.class);
+                        startActivity(itHome);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        loadingGif.setVisibility(View.INVISIBLE);
+                        findViewById(R.id.btnNext).setVisibility(View.VISIBLE);
+                        findViewById(R.id.btnBack).setVisibility(View.VISIBLE);
+                        findViewById(R.id.btnDone).setVisibility(View.VISIBLE);
+                        Toast.makeText(ActAddCarDealStep.this, "Posting error!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
         }
     }
 }
