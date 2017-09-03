@@ -4,7 +4,6 @@
     android:layout_height="wrap_content">
     <ImageView
         android:id="@+id/imgCarTypeThumb"
-        android:background="@drawable/no_image_car"
         android:layout_width="100dp"
         android:layout_height="100dp" />
     <TextView
@@ -12,6 +11,9 @@
         android:id="@+id/txtCarType"
         android:layout_alignBottom="@+id/imgCarTypeThumb"
         android:layout_centerHorizontal="true"
+        android:background="@android:color/black"
+        android:textColor="@android:color/white"
+        android:alpha="0.5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <ImageView

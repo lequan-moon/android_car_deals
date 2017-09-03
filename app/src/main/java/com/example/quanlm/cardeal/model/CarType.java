@@ -8,6 +8,7 @@ public class CarType {
     String carTypeCode;
     String carTypeName;
     boolean isChecked = false;
+    String thumbnail;
 
     public CarType() {
     }
@@ -40,5 +41,13 @@ public class CarType {
 
     public void setChecked(boolean checked) {
         isChecked = checked;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
     }
 }

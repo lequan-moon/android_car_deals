@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.quanlm.cardeal.R;
 import com.example.quanlm.cardeal.model.CarType;
 
@@ -46,6 +47,11 @@ public class CarTypeAdapter extends RecyclerView.Adapter<CarTypeAdapter.CarTypeV
 
         final CarType carType = lstCarType.get(position);
         holder.txtCarType.setText(carType.getCarTypeName());
+        Glide.with(mContext)
+                .load(carType.getThumbnail())
+                .fitCenter()
+                .into(holder.imgCarTypeThumb);
+
         if (carType.isChecked()) {
             holder.carTypeChecked.setVisibility(View.VISIBLE);
         }
@@ -92,12 +98,14 @@ public class CarTypeAdapter extends RecyclerView.Adapter<CarTypeAdapter.CarTypeV
         View itemView;
         TextView txtCarType;
         ImageView carTypeChecked;
+        ImageView imgCarTypeThumb;
 
         public CarTypeViewHolder(View itemView) {
             super(itemView);
             this.itemView = itemView;
             txtCarType = (TextView) itemView.findViewById(R.id.txtCarType);
             carTypeChecked = (ImageView) itemView.findViewById(R.id.carTypeChecked);
+            imgCarTypeThumb = (ImageView) itemView.findViewById(R.id.imgCarTypeThumb);
         }
     }
 }

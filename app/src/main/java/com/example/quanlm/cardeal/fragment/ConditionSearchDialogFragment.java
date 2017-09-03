@@ -13,9 +13,15 @@ import android.widget.TextView;
 import com.example.quanlm.cardeal.R;
 import com.example.quanlm.cardeal.adapter.BrandAdapter;
 import com.example.quanlm.cardeal.adapter.CarTypeAdapter;
+import com.example.quanlm.cardeal.configure.Constants;
 import com.example.quanlm.cardeal.model.Brand;
 import com.example.quanlm.cardeal.model.CarType;
 import com.example.quanlm.cardeal.model.Filter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,12 +39,20 @@ public class ConditionSearchDialogFragment extends DialogFragment {
     TextView txtPriceStart;
     TextView txtPriceEnd;
 
+    BrandAdapter adtBrand;
+    List<Brand> lstBrand;
+
+    CarTypeAdapter adtCarType;
+    List<CarType> lstCarType;
+
     MultiSlider sliderManufacturedYear;
     TextView txtManufacturedStart;
     TextView txtManufacturedEnd;
 
     OnSearchConditionChangedListener mListener;
     Filter mFilter;
+
+    FirebaseDatabase mDatabase;
 
     public ConditionSearchDialogFragment() {
     }
@@ -58,9 +72,11 @@ public class ConditionSearchDialogFragment extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-
+        
+        mDatabase = FirebaseDatabase.getInstance();
         initControls();
         initEvents();
+
         getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
     }
 
@@ -137,16 +153,16 @@ public class ConditionSearchDialogFragment extends DialogFragment {
     private void initControls() {
         // Setup brand condition
         rcvBrand = (RecyclerView) getView().findViewById(R.id.rcvBrand);
-        List<Brand> lstBrand = getListBrandCondition();
-        BrandAdapter adtBrand = new BrandAdapter(getContext(), lstBrand);
+        lstBrand = getListBrandCondition();
+        adtBrand = new BrandAdapter(getContext(), lstBrand);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
         rcvBrand.setLayoutManager(layoutManager);
         rcvBrand.setAdapter(adtBrand);
 
         // Setup cartype condition
         rcvCarType = (RecyclerView) getView().findViewById(R.id.rcvCarType);
-        List<CarType> lstCarType = getListCarTypeCondition();
-        CarTypeAdapter adtCarType = new CarTypeAdapter(getContext(), lstCarType);
+        lstCarType = getListCarTypeCondition();
+        adtCarType = new CarTypeAdapter(getContext(), lstCarType);
         RecyclerView.LayoutManager layoutManagerCarType = new GridLayoutManager(getContext(), 3);
         rcvCarType.setLayoutManager(layoutManagerCarType);
         rcvCarType.setAdapter(adtCarType);
@@ -204,14 +220,24 @@ public class ConditionSearchDialogFragment extends DialogFragment {
     }
 
     private List<Brand> getListBrandCondition() {
-        List<Brand> lstBrand = new ArrayList<>();
-        lstBrand.add(new Brand("Honda", "Honda"));
-        lstBrand.add(new Brand("Toyota", "Toyota"));
-        lstBrand.add(new Brand("Hyundai", "Hyundai"));
-        lstBrand.add(new Brand("Suzuki", "Suzuki"));
-        lstBrand.add(new Brand("Mercedes", "Mercedes-Benz"));
-        lstBrand.add(new Brand("Audi", "Audi"));
-        lstBrand.add(new Brand("BMW", "BMW"));
+        lstBrand = new ArrayList<>();
+        DatabaseReference brandTable = mDatabase.getReference(Constants.BRAND_TABLE);
+        brandTable.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot brand :
+                        dataSnapshot.getChildren()) {
+                    Brand objBrand = brand.getValue(Brand.class);
+                    lstBrand.add(objBrand);
+                }
+                adtBrand.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         if (mFilter != null) {
             String[] lstCheckedbrand = mFilter.getBrandCode();
@@ -230,13 +256,24 @@ public class ConditionSearchDialogFragment extends DialogFragment {
     }
 
     private List<CarType> getListCarTypeCondition() {
-        List<CarType> lstCarType = new ArrayList<>();
-        lstCarType.add(new CarType("type1", "Sedan"));
-        lstCarType.add(new CarType("type2", "Hatchback"));
-        lstCarType.add(new CarType("type3", "MPV"));
-        lstCarType.add(new CarType("type4", "SUV"));
-        lstCarType.add(new CarType("type5", "Crossover"));
-        lstCarType.add(new CarType("type6", "Coupe"));
+        lstCarType = new ArrayList<>();
+        DatabaseReference brandTable = mDatabase.getReference(Constants.CAR_TYPE_TABLE);
+        brandTable.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot carType :
+                        dataSnapshot.getChildren()) {
+                    CarType objCarType = carType.getValue(CarType.class);
+                    lstCarType.add(objCarType);
+                }
+                adtCarType.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         if (mFilter != null) {
             String[] lstCheckedCarType = mFilter.getCarTypeCode();
