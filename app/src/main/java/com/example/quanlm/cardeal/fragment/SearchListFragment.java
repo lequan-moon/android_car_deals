@@ -22,10 +22,12 @@ import com.example.quanlm.cardeal.configure.Constants;
 import com.example.quanlm.cardeal.model.Brand;
 import com.example.quanlm.cardeal.model.Car;
 import com.example.quanlm.cardeal.model.Filter;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -112,6 +114,7 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
 
         mDatabase = FirebaseDatabase.getInstance();
 
+        mFilter = new Filter();
         btnSearch = (FloatingActionButton) view.findViewById(R.id.btnSearch);
 
         rcvCarList = (RecyclerView) view.findViewById(R.id.rcvCarList);
@@ -126,12 +129,21 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
         dealTable.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot dealer :
-                        dataSnapshot.getChildren()) {
-                    for (DataSnapshot deal:
-                            dealer.getChildren()) {
+//                for (DataSnapshot dealer : dataSnapshot.getChildren()) {
+//                    Query query = dealer.getRef().orderByChild("brand").equalTo("Chevrolet");
+//                    query.addChildEventListener(new FilteredEventListener());
+//                }
+                for (DataSnapshot dealer : dataSnapshot.getChildren()) {
+                    for (DataSnapshot deal: dealer.getChildren()) {
                         Car objDeal = deal.getValue(Car.class);
-                        lstCar.add(objDeal);
+
+                        // TODO: QuanLM implement filter
+                        // We will use filter in client's side
+                        // So for performance, we should use some paging technique and default filter
+                        // like "Featured deal", ...
+                        if ("Chevrolet".equals(objDeal.getBrand())) {
+                            lstCar.add(objDeal);
+                        }
                     }
                 }
                 adtCar.notifyDataSetChanged();
@@ -212,5 +224,35 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private class FilteredEventListener implements ChildEventListener {
+
+        @Override
+        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            Car objDeal = dataSnapshot.getValue(Car.class);
+            lstCar.add(objDeal);
+            adtCar.notifyDataSetChanged();
+        }
+
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
     }
 }

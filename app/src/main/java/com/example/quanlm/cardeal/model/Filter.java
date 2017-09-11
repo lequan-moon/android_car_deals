@@ -12,6 +12,15 @@ public class Filter {
     String manufacturedYearStart;
     String manufacturedYearEnd;
 
+    public Filter() {
+        brandCode = new String[]{};
+        carTypeCode = new String[]{};
+        priceStart = "";
+        priceEnd = "";
+        manufacturedYearStart = "";
+        manufacturedYearEnd = "";
+    }
+
     public Filter(String[] brandCode, String[] carTypeCode, String priceStart, String priceEnd, String manufacturedYearStart, String manufacturedYearEnd) {
         this.brandCode = brandCode;
         this.carTypeCode = carTypeCode;
