@@ -188,16 +188,16 @@ public class ConditionSearchDialogFragment extends DialogFragment {
             String priceEnd = mFilter.getPriceEnd();
             txtPriceStart.setText(priceStart);
             txtPriceEnd.setText(priceEnd);
-            sliderPrice.getThumb(0).setValue(Integer.valueOf(priceStart));
-            sliderPrice.getThumb(1).setValue(Integer.valueOf(priceEnd));
+            sliderPrice.getThumb(0).setValue(priceStart != null ? Integer.valueOf(priceStart) : Constants.FILTER_PRICE_MIN);
+            sliderPrice.getThumb(1).setValue(priceEnd != null ? Integer.valueOf(priceEnd) : Constants.FILTER_PRICE_MAX);
         }
 
         // Setup manufactured date slider
         sliderManufacturedYear = (MultiSlider) getView().findViewById(R.id.sliderManufacturedYear);
         txtManufacturedStart = (TextView) getView().findViewById(R.id.txtManufacturedStart);
         txtManufacturedEnd = (TextView) getView().findViewById(R.id.txtManufacturedEnd);
-        sliderPrice.setMin(0);
-        sliderPrice.setMax(99);
+        sliderPrice.setMin(Constants.FILTER_PRICE_MIN);
+        sliderPrice.setMax(Constants.FILTER_PRICE_MAX);
         sliderManufacturedYear.setOnThumbValueChangeListener(new MultiSlider.OnThumbValueChangeListener() {
             @Override
             public void onValueChanged(MultiSlider multiSlider, MultiSlider.Thumb thumb, int thumbIndex, int value) {
@@ -231,6 +231,19 @@ public class ConditionSearchDialogFragment extends DialogFragment {
                     lstBrand.add(objBrand);
                 }
                 adtBrand.notifyDataSetChanged();
+
+                if (mFilter != null) {
+                    String[] lstCheckedbrand = mFilter.getBrandCode();
+                    for (int idxCheckedBrand = 0; idxCheckedBrand < lstCheckedbrand.length; idxCheckedBrand++) {
+                        for (int idxBrand = 0; idxBrand < lstBrand.size(); idxBrand++) {
+                            Brand brand = lstBrand.get(idxBrand);
+                            String checkedBrand = lstCheckedbrand[idxCheckedBrand];
+                            if (brand.getBrandCode().equals(checkedBrand)) {
+                                brand.setSelected(true);
+                            }
+                        }
+                    }
+                }
             }
 
             @Override
@@ -238,19 +251,6 @@ public class ConditionSearchDialogFragment extends DialogFragment {
 
             }
         });
-
-        if (mFilter != null) {
-            String[] lstCheckedbrand = mFilter.getBrandCode();
-            for (int idxCheckedBrand = 0; idxCheckedBrand < lstCheckedbrand.length; idxCheckedBrand++) {
-                for (int idxBrand = 0; idxBrand < lstBrand.size(); idxBrand++) {
-                    Brand brand = lstBrand.get(idxBrand);
-                    String checkedBrand = lstCheckedbrand[idxCheckedBrand];
-                    if (brand.getBrandCode().equals(checkedBrand)) {
-                        brand.setSelected(true);
-                    }
-                }
-            }
-        }
 
         return lstBrand;
     }

@@ -59,7 +59,7 @@
                     android:layout_height="wrap_content" />
                 <TextView
                     android:id="@+id/txtPriceStart"
-                    android:text="Price"
+                    android:text="0"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
                 <TextView
@@ -68,7 +68,7 @@
                     android:layout_height="wrap_content" />
                 <TextView
                     android:id="@+id/txtPriceEnd"
-                    android:text="Price"
+                    android:text="0"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </LinearLayout>
@@ -97,7 +97,7 @@
                     android:layout_height="wrap_content" />
                 <TextView
                     android:id="@+id/txtManufacturedStart"
-                    android:text="Manufactured Year"
+                    android:text="1900"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
                 <TextView
@@ -106,7 +106,7 @@
                     android:layout_height="wrap_content" />
                 <TextView
                     android:id="@+id/txtManufacturedEnd"
-                    android:text="Manufactured Year"
+                    android:text="2017"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </LinearLayout>

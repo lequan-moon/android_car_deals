@@ -9,6 +9,7 @@ import com.example.quanlm.cardeal.model.Car;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.List;
 
 /**
  * Created by MyPC on 29/08/2017.
@@ -27,7 +28,25 @@ public class Util {
         return favoriteString.substring(favoriteString.indexOf("@") + 1, favoriteString.length());
     }
 
-    public static File saveBitmapToFile(File file){
+    public static boolean isEmptyStringArray(String[] array) {
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] != null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isEmptyList(List list) {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i) != null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static File saveBitmapToFile(File file) {
         try {
 
             // BitmapFactory options to downsize the image
@@ -42,11 +61,11 @@ public class Util {
             inputStream.close();
 
             // The new size we want to scale to
-            final int REQUIRED_SIZE=75;
+            final int REQUIRED_SIZE = 75;
 
             // Find the correct scale value. It should be the power of 2.
             int scale = 1;
-            while(o.outWidth / scale / 2 >= REQUIRED_SIZE &&
+            while (o.outWidth / scale / 2 >= REQUIRED_SIZE &&
                     o.outHeight / scale / 2 >= REQUIRED_SIZE) {
                 scale *= 2;
             }
@@ -62,7 +81,7 @@ public class Util {
             file.createNewFile();
             FileOutputStream outputStream = new FileOutputStream(file);
 
-            selectedBitmap.compress(Bitmap.CompressFormat.JPEG, 100 , outputStream);
+            selectedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
 
             return file;
         } catch (Exception e) {

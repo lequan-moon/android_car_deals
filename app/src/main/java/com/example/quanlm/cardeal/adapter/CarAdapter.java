@@ -71,6 +71,11 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
         return lstCar.size();
     }
 
+    public void updateData(List<Car> lstCar){
+        this.lstCar = lstCar;
+        notifyDataSetChanged();
+    }
+
     public class CarViewHolder extends RecyclerView.ViewHolder {
         ImageView imgCarThumb;
         TextView txtCarName;

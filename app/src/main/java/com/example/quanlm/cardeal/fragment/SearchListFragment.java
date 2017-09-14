@@ -22,6 +22,7 @@ import com.example.quanlm.cardeal.configure.Constants;
 import com.example.quanlm.cardeal.model.Brand;
 import com.example.quanlm.cardeal.model.Car;
 import com.example.quanlm.cardeal.model.Filter;
+import com.example.quanlm.cardeal.util.Util;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -31,6 +32,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -114,7 +116,6 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
 
         mDatabase = FirebaseDatabase.getInstance();
 
-        mFilter = new Filter();
         btnSearch = (FloatingActionButton) view.findViewById(R.id.btnSearch);
 
         rcvCarList = (RecyclerView) view.findViewById(R.id.rcvCarList);
@@ -126,48 +127,25 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
         rcvCarList.setAdapter(adtCar);
 
         DatabaseReference dealTable = mDatabase.getReference(Constants.DEAL_TABLE);
-        dealTable.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-//                for (DataSnapshot dealer : dataSnapshot.getChildren()) {
-//                    Query query = dealer.getRef().orderByChild("brand").equalTo("Chevrolet");
-//                    query.addChildEventListener(new FilteredEventListener());
-//                }
-                for (DataSnapshot dealer : dataSnapshot.getChildren()) {
-                    for (DataSnapshot deal: dealer.getChildren()) {
-                        Car objDeal = deal.getValue(Car.class);
-
-                        // TODO: QuanLM implement filter
-                        // We will use filter in client's side
-                        // So for performance, we should use some paging technique and default filter
-                        // like "Featured deal", ...
-                        if ("Chevrolet".equals(objDeal.getBrand())) {
-                            lstCar.add(objDeal);
-                        }
-                    }
-                }
-                adtCar.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        dealTable.addValueEventListener(new DealTableValueEventListener());
     }
 
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//        lastFirstVisiblePosition = ((LinearLayoutManager) rcvCarList.getLayoutManager()).findFirstVisibleItemPosition();
-//    }
-//
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        ((LinearLayoutManager) rcvCarList.getLayoutManager()).scrollToPosition(lastFirstVisiblePosition);
-//        lastFirstVisiblePosition = 0;
-//    }
+    private boolean isMatchWithFilter(Car objDeal) {
+        // Filter = null -> no filter at all
+        if (mFilter != null) {
+            // TODO: QuanLM implement all other filter condition
+            List filteredBrand = Arrays.asList(mFilter.getBrandCode());
+            if (Util.isEmptyList(filteredBrand) || filteredBrand.contains(objDeal.getBrand())
+//                    && Arrays.asList(mFilter.getBrandCode()).contains(objDeal.getBrand())
+//                    && Arrays.asList(mFilter.getCarTypeCode()).contains(objDeal.getCarType())
+                    ) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -198,7 +176,9 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
         conditionSearchDialogFragment.dismiss();
         mFilter = filter;
 
-        // TODO: QuanLM Reload list with received filter condition
+        lstCar.clear();
+        DatabaseReference dealTable = mDatabase.getReference(Constants.DEAL_TABLE);
+        dealTable.addValueEventListener(new DealTableValueEventListener());
     }
 
     @Override
@@ -248,6 +228,28 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
         @Override
         public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    }
+
+    private class DealTableValueEventListener implements ValueEventListener {
+
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            for (DataSnapshot dealer : dataSnapshot.getChildren()) {
+                for (DataSnapshot deal: dealer.getChildren()) {
+                    Car objDeal = deal.getValue(Car.class);
+
+                    if (isMatchWithFilter(objDeal)) {
+                        lstCar.add(objDeal);
+                    }
+                }
+            }
+            adtCar.updateData(lstCar);
         }
 
         @Override

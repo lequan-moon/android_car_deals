@@ -13,4 +13,6 @@ public class Constants {
     public static final String BRAND_TABLE = "brands";
     public static final String CAR_TYPE_TABLE = "cartypes";
     public static final String DEAL_TABLE = "deals";
+    public static final int FILTER_PRICE_MIN = 0;
+    public static final int FILTER_PRICE_MAX = 99;
 }
