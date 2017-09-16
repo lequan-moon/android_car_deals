@@ -135,8 +135,12 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
         if (mFilter != null) {
             // TODO: QuanLM implement all other filter condition
             List filteredBrand = Arrays.asList(mFilter.getBrandCode());
+            List filteredCarType = Arrays.asList(mFilter.getCarTypeCode());
+            int priceStart = Integer.valueOf(mFilter.getPriceStart());
+            int priceEnd = Integer.valueOf(mFilter.getPriceEnd());
             if (Util.isEmptyList(filteredBrand) || filteredBrand.contains(objDeal.getBrand())
-//                    && Arrays.asList(mFilter.getBrandCode()).contains(objDeal.getBrand())
+                    && Util.isEmptyList(filteredCarType) || filteredCarType.contains(objDeal.getCarType())
+                    && (priceStart <= Double.valueOf(objDeal.getPrice()) && Double.valueOf(objDeal.getPrice()) <= priceEnd)
 //                    && Arrays.asList(mFilter.getCarTypeCode()).contains(objDeal.getCarType())
                     ) {
                 return true;
@@ -204,36 +208,6 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-    }
-
-    private class FilteredEventListener implements ChildEventListener {
-
-        @Override
-        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            Car objDeal = dataSnapshot.getValue(Car.class);
-            lstCar.add(objDeal);
-            adtCar.notifyDataSetChanged();
-        }
-
-        @Override
-        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-        }
-
-        @Override
-        public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-        }
-
-        @Override
-        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-        }
-
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-
-        }
     }
 
     private class DealTableValueEventListener implements ValueEventListener {

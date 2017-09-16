@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">CarDeal</string>
     <string name="car_deal_oAuth_client">596983284900-nft2puju8rudelf0a60gevsoglrs7mrq.apps.googleusercontent.com</string>
+    <string name="price_unit"> triệu đồng</string>
 
 </resources>

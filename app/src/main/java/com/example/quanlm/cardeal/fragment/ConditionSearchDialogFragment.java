@@ -112,8 +112,8 @@ public class ConditionSearchDialogFragment extends DialogFragment {
                 }
 
                 // Process price
-                selectedPriceStart = String.valueOf(txtPriceStart.getText());
-                selectedPriceEnd = String.valueOf(txtPriceEnd.getText());
+                selectedPriceStart = String.valueOf(sliderPrice.getThumb(0).getValue());
+                selectedPriceEnd = String.valueOf(sliderPrice.getThumb(1).getValue());
 
                 // Process manufactured date
                 selectedManufacturedYearStart = String.valueOf(txtManufacturedStart.getText());
@@ -140,12 +140,12 @@ public class ConditionSearchDialogFragment extends DialogFragment {
                 ((CarTypeAdapter) rcvCarType.getAdapter()).clearCondition();
 
                 // Reset price slider
-                sliderPrice.getThumb(0).setValue(0);
-                sliderPrice.getThumb(1).setValue(99);
+                sliderPrice.getThumb(0).setValue(Constants.FILTER_PRICE_MIN);
+                sliderPrice.getThumb(1).setValue(Constants.FILTER_PRICE_MAX);
 
                 // Reset manufactured year slider
-                sliderManufacturedYear.getThumb(0).setValue(0);
-                sliderManufacturedYear.getThumb(1).setValue(99);
+                sliderManufacturedYear.getThumb(0).setValue(Constants.FILTER_YEAR_MIN);
+                sliderManufacturedYear.getThumb(1).setValue(Constants.FILTER_YEAR_MAX);
             }
         });
     }
@@ -171,33 +171,39 @@ public class ConditionSearchDialogFragment extends DialogFragment {
         sliderPrice = (MultiSlider) getView().findViewById(R.id.sliderPrice);
         txtPriceStart = (TextView) getView().findViewById(R.id.txtPriceStart);
         txtPriceEnd = (TextView) getView().findViewById(R.id.txtPriceEnd);
-        sliderPrice.setMin(0);
-        sliderPrice.setMax(99);
+        sliderPrice.setMin(Constants.FILTER_PRICE_MIN);
+        sliderPrice.setMax(Constants.FILTER_PRICE_MAX);
         sliderPrice.setOnThumbValueChangeListener(new MultiSlider.OnThumbValueChangeListener() {
             @Override
             public void onValueChanged(MultiSlider multiSlider, MultiSlider.Thumb thumb, int thumbIndex, int value) {
                 if (thumbIndex == 0) {
-                    txtPriceStart.setText(String.valueOf(value));
+                    txtPriceStart.setText(generatePriceString(value));
                 } else {
-                    txtPriceEnd.setText(String.valueOf(value));
+                    txtPriceEnd.setText(generatePriceString(value));
                 }
             }
         });
+        sliderPrice.setStep(100);
         if (mFilter != null) {
             String priceStart = mFilter.getPriceStart();
             String priceEnd = mFilter.getPriceEnd();
             txtPriceStart.setText(priceStart);
             txtPriceEnd.setText(priceEnd);
-            sliderPrice.getThumb(0).setValue(priceStart != null ? Integer.valueOf(priceStart) : Constants.FILTER_PRICE_MIN);
-            sliderPrice.getThumb(1).setValue(priceEnd != null ? Integer.valueOf(priceEnd) : Constants.FILTER_PRICE_MAX);
+            sliderPrice.getThumb(0).setValue(Integer.valueOf(priceStart));
+            sliderPrice.getThumb(1).setValue(Integer.valueOf(priceEnd));
+        } else {
+            sliderPrice.getThumb(0).setValue(Constants.FILTER_PRICE_MIN);
+            sliderPrice.getThumb(1).setValue(Constants.FILTER_PRICE_MAX);
         }
 
         // Setup manufactured date slider
+        // TODO: QuanLM Fixbug and show this field
+        // Temporary set GONE in view for this field
         sliderManufacturedYear = (MultiSlider) getView().findViewById(R.id.sliderManufacturedYear);
         txtManufacturedStart = (TextView) getView().findViewById(R.id.txtManufacturedStart);
         txtManufacturedEnd = (TextView) getView().findViewById(R.id.txtManufacturedEnd);
-        sliderPrice.setMin(Constants.FILTER_PRICE_MIN);
-        sliderPrice.setMax(Constants.FILTER_PRICE_MAX);
+        sliderManufacturedYear.setMin(Constants.FILTER_YEAR_MIN);
+        sliderManufacturedYear.setMax(Constants.FILTER_YEAR_MAX); // TODO: QuanLM replace with current year
         sliderManufacturedYear.setOnThumbValueChangeListener(new MultiSlider.OnThumbValueChangeListener() {
             @Override
             public void onValueChanged(MultiSlider multiSlider, MultiSlider.Thumb thumb, int thumbIndex, int value) {
@@ -208,6 +214,7 @@ public class ConditionSearchDialogFragment extends DialogFragment {
                 }
             }
         });
+        sliderManufacturedYear.setStep(1);
         if (mFilter != null) {
             String manufacturedYearStart = mFilter.getManufacturedYearStart();
             String manufacturedYearEnd = mFilter.getManufacturedYearEnd();
@@ -215,8 +222,22 @@ public class ConditionSearchDialogFragment extends DialogFragment {
             txtManufacturedEnd.setText(manufacturedYearEnd);
             sliderManufacturedYear.getThumb(0).setValue(Integer.valueOf(manufacturedYearStart));
             sliderManufacturedYear.getThumb(1).setValue(Integer.valueOf(manufacturedYearEnd));
+        } else {
+            sliderManufacturedYear.getThumb(0).setValue(Constants.FILTER_YEAR_MIN);
+            sliderManufacturedYear.getThumb(1).setValue(Constants.FILTER_YEAR_MAX);
         }
 
+    }
+
+    private String generatePriceString(int price) {
+        if (price == 0) {
+            return "0";
+        }
+        if (price == Constants.FILTER_PRICE_MAX) {
+            return "no limit";
+        } else {
+            return String.valueOf(price) + " " + getString(R.string.price_unit);
+        }
     }
 
     private List<Brand> getListBrandCondition() {
@@ -267,6 +288,19 @@ public class ConditionSearchDialogFragment extends DialogFragment {
                     lstCarType.add(objCarType);
                 }
                 adtCarType.notifyDataSetChanged();
+
+                if (mFilter != null) {
+                    String[] lstCheckedCarType = mFilter.getCarTypeCode();
+                    for (int idxCheckedCarType = 0; idxCheckedCarType < lstCheckedCarType.length; idxCheckedCarType++) {
+                        for (int idxCarType = 0; idxCarType < lstCarType.size(); idxCarType++) {
+                            CarType carType = lstCarType.get(idxCarType);
+                            String checkedCarType = lstCheckedCarType[idxCheckedCarType];
+                            if (carType.getCarTypeCode().equals(checkedCarType)) {
+                                carType.setChecked(true);
+                            }
+                        }
+                    }
+                }
             }
 
             @Override
@@ -275,18 +309,6 @@ public class ConditionSearchDialogFragment extends DialogFragment {
             }
         });
 
-        if (mFilter != null) {
-            String[] lstCheckedCarType = mFilter.getCarTypeCode();
-            for (int idxCheckedCarType = 0; idxCheckedCarType < lstCheckedCarType.length; idxCheckedCarType++) {
-                for (int idxCarType = 0; idxCarType < lstCarType.size(); idxCarType++) {
-                    CarType carType = lstCarType.get(idxCarType);
-                    String checkedCarType = lstCheckedCarType[idxCheckedCarType];
-                    if (carType.getCarTypeCode().equals(checkedCarType)) {
-                        carType.setChecked(true);
-                    }
-                }
-            }
-        }
         return lstCarType;
     }
 

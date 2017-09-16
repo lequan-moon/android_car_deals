@@ -83,10 +83,12 @@
         </LinearLayout>
 
         <!--Manufactured year-->
+        <!--Temporary gone TODO: QuanLM open this -->
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="gone">
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"

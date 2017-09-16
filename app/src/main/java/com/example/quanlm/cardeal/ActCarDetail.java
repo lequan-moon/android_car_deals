@@ -84,7 +84,7 @@ public class ActCarDetail extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCE, MODE_PRIVATE);
         Set<String> favoriteCars = sharedPreferences.getStringSet(Constants.FAVORITE, new ArraySet<String>());
         if (favoriteCars.contains(Util.generateFavoriteString(selectedCar))) {
-            btnLike.setBackground(getDrawable(R.drawable.ic_favorite_black_48dp));
+            btnLike.setBackground(getResources().getDrawable(R.drawable.ic_favorite_black_48dp));
         }
 
     }
@@ -127,12 +127,12 @@ public class ActCarDetail extends AppCompatActivity {
                     favoriteCar.remove(Util.generateFavoriteString(selectedCar));
                     editor.putStringSet(Constants.FAVORITE, favoriteCar);
                     editor.commit();
-                    v.setBackground(getDrawable(R.drawable.ic_favorite_border_black_48dp));
+                    v.setBackground(getResources().getDrawable(R.drawable.ic_favorite_border_black_48dp));
                 } else {
                     favoriteCar.add(Util.generateFavoriteString(selectedCar));
                     editor.putStringSet(Constants.FAVORITE, favoriteCar);
                     editor.commit();
-                    v.setBackground(getDrawable(R.drawable.ic_favorite_black_48dp));
+                    v.setBackground(getResources().getDrawable(R.drawable.ic_favorite_black_48dp));
                 }
             }
         });

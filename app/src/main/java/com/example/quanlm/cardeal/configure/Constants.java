@@ -14,5 +14,7 @@ public class Constants {
     public static final String CAR_TYPE_TABLE = "cartypes";
     public static final String DEAL_TABLE = "deals";
     public static final int FILTER_PRICE_MIN = 0;
-    public static final int FILTER_PRICE_MAX = 99;
+    public static final int FILTER_PRICE_MAX = 9999;
+    public static final int FILTER_YEAR_MIN = 1900;
+    public static final int FILTER_YEAR_MAX = 2017;
 }
