@@ -41,7 +41,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
     public void onBindViewHolder(CarViewHolder holder, int position) {
         final Car car = lstCar.get(position);
         holder.txtCarName.setText(car.getName());
-        holder.txtDescription.setText(car.getDescription());
+        holder.txtDescription.setText(car.getSlogan());
         holder.carItemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -18,9 +18,18 @@ public class Car implements Serializable {
     String carType;
     String dealerName;
     String dealerPhoneNumber;
+    String slogan;
     List<String> images;
 
     String dealerDisplayName;
+
+    public String getSlogan() {
+        return slogan;
+    }
+
+    public void setSlogan(String slogan) {
+        this.slogan = slogan;
+    }
 
     public Car() {
     }

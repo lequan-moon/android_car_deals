@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -216,6 +217,7 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
         public void onDataChange(DataSnapshot dataSnapshot) {
             for (DataSnapshot dealer : dataSnapshot.getChildren()) {
                 for (DataSnapshot deal: dealer.getChildren()) {
+                    Log.d("DB", "onDataChange: " + deal.getValue());
                     Car objDeal = deal.getValue(Car.class);
 
                     if (isMatchWithFilter(objDeal)) {
@@ -228,7 +230,7 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
 
         @Override
         public void onCancelled(DatabaseError databaseError) {
-
+            Log.d("DB", databaseError.getDetails());
         }
     }
 }
