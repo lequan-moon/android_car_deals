@@ -1,6 +1,7 @@
 package com.example.quanlm.cardeal.adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,9 @@ import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.example.quanlm.cardeal.R;
 import com.example.quanlm.cardeal.model.Car;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.List;
 
@@ -24,10 +28,12 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
     Context mContext;
     List<Car> lstCar;
     OnCarSelectListener mCarSelectListener;
+    FirebaseStorage mStorage;
 
     public CarAdapter(Context mContext, List<Car> lstCar) {
         this.mContext = mContext;
         this.lstCar = lstCar;
+        mStorage = FirebaseStorage.getInstance();
     }
 
     @Override
@@ -38,7 +44,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(CarViewHolder holder, int position) {
+    public void onBindViewHolder(final CarViewHolder holder, int position) {
         final Car car = lstCar.get(position);
         holder.txtCarName.setText(car.getName());
         holder.txtDescription.setText(car.getSlogan());
@@ -51,13 +57,24 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
             }
         });
         if (car.getImages() != null && car.getImages().size() > 0) {
+            Task<Uri> imageUrl = null;
+            if (car.getImages().size() > 0) {
+                imageUrl = mStorage.getReferenceFromUrl(car.getImages().get(0)).getDownloadUrl();
+            }
 
-            Glide.with(mContext)
-                    .load(car.getImages().get(0))
-                    .placeholder(R.drawable.no_image_car)
-//                    .centerCrop()
-                    .fitCenter()
-                    .into(holder.imgCarThumb);
+            if(imageUrl != null) {
+                imageUrl.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Glide.with(mContext)
+                                .load(uri)
+                                .placeholder(R.drawable.no_image_car)
+                                .fitCenter()
+                                .into(holder.imgCarThumb);
+                    }
+                });
+
+            }
         } else {
             Glide.with(mContext)
                     .load(R.drawable.no_image_car)
