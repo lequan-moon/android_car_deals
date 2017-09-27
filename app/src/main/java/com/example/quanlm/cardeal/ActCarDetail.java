@@ -1,6 +1,7 @@
 package com.example.quanlm.cardeal;
 
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.support.v4.util.ArraySet;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,11 +17,14 @@ import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.example.quanlm.cardeal.configure.Constants;
 import com.example.quanlm.cardeal.model.Car;
 import com.example.quanlm.cardeal.util.Util;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.Set;
 
@@ -40,6 +44,7 @@ public class ActCarDetail extends AppCompatActivity {
     Car selectedCar;
 
     FirebaseDatabase mDatabase;
+    FirebaseStorage mStorage;
 
 
     @Override
@@ -49,6 +54,7 @@ public class ActCarDetail extends AppCompatActivity {
         Bundle params = getIntent().getBundleExtra(Constants.CAR_DETAIL_PARAMS);
         selectedCar = (Car) params.getSerializable("selected_car");
         mDatabase = FirebaseDatabase.getInstance();
+        mStorage = FirebaseStorage.getInstance();
         initControls();
         initEvents();
     }
@@ -74,8 +80,15 @@ public class ActCarDetail extends AppCompatActivity {
 
         if (selectedCar.getImages() != null && selectedCar.getImages().size() > 0) {
             for (int i = 0; i < selectedCar.getImages().size(); i++) {
-                DefaultSliderView slide = new DefaultSliderView(this);
-                slide.image(selectedCar.getImages().get(i));
+                final DefaultSliderView slide = new DefaultSliderView(this);
+                Task<Uri> downloadUrl = mStorage.getReferenceFromUrl(selectedCar.getImages().get(i)).getDownloadUrl();
+                downloadUrl.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        slide.image(uri.toString());
+                    }
+                });
+
                 slider.addSlider(slide);
             }
         }
@@ -151,7 +164,7 @@ public class ActCarDetail extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (selectedCar.getImages().size() > 1) {
+        if (selectedCar.getImages() != null && selectedCar.getImages().size() > 1) {
             slider.startAutoCycle();
         } else {
             slider.stopAutoCycle();
