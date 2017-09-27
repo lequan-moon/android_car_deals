@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -20,7 +19,6 @@ import com.example.quanlm.cardeal.ActCarDetail;
 import com.example.quanlm.cardeal.R;
 import com.example.quanlm.cardeal.adapter.CarAdapter;
 import com.example.quanlm.cardeal.configure.Constants;
-import com.example.quanlm.cardeal.model.Brand;
 import com.example.quanlm.cardeal.model.Car;
 import com.example.quanlm.cardeal.model.Filter;
 import com.example.quanlm.cardeal.util.Util;
@@ -29,24 +27,16 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link SearchListFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link SearchListFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class SearchListFragment extends Fragment implements ConditionSearchDialogFragment.OnSearchConditionChangedListener, CarAdapter.OnCarSelectListener {
-
-    private OnFragmentInteractionListener mListener;
+public class SearchListFragment extends Fragment implements
+        ConditionSearchDialogFragment.OnSearchConditionChangedListener,
+        CarAdapter.OnCarSelectListener,
+        View.OnScrollChangeListener{
 
     FloatingActionButton btnSearch;
 
@@ -57,6 +47,9 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
     ConditionSearchDialogFragment conditionSearchDialogFragment;
 
     private FirebaseDatabase mDatabase;
+    DatabaseReference dealTable;
+    String lastRecordKey;
+    private boolean isPopulatingData;
 
 
     public SearchListFragment() {
@@ -121,20 +114,25 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
 
         rcvCarList = (RecyclerView) view.findViewById(R.id.rcvCarList);
         lstCar = new ArrayList<>();
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         adtCar = new CarAdapter(getContext(), lstCar);
         adtCar.setmCarSelectListener(this);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+
         rcvCarList.setLayoutManager(layoutManager);
         rcvCarList.setAdapter(adtCar);
+        rcvCarList.setOnScrollChangeListener(this);
 
-        DatabaseReference dealTable = mDatabase.getReference(Constants.DEAL_TABLE);
-        dealTable.addValueEventListener(new DealTableValueEventListener());
+        dealTable = mDatabase.getReference(Constants.DEAL_TABLE);
+        dealTable.orderByKey()
+                .limitToFirst(Constants.ITEM_PER_PAGE)
+                .addValueEventListener(new DealTableValueEventListener());
+//                .addChildEventListener(new DealTableChildEventListener());
     }
 
     private boolean isMatchWithFilter(Car objDeal) {
         // Filter = null -> no filter at all
         if (mFilter != null) {
-            // TODO: QuanLM implement all other filter condition
             List filteredBrand = Arrays.asList(mFilter.getBrandCode());
             List filteredCarType = Arrays.asList(mFilter.getCarTypeCode());
             double priceStart = mFilter.getPriceStartValue();
@@ -144,6 +142,7 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
                 carPrice = Double.valueOf(objDeal.getPrice());
             } catch (NumberFormatException ex) {
                 // If exception then not defined price
+                // Ex: "contact for detail", "thoa thuan", ...
                 carPrice = 0;
             }
 
@@ -158,30 +157,6 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
             }
         }
         return true;
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
     }
 
     @Override
@@ -204,35 +179,78 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
         getActivity().overridePendingTransition(R.anim.right_out, R.anim.left_in);
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    @Override
+    public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+        LinearLayoutManager mLayoutManager = (LinearLayoutManager) rcvCarList.getLayoutManager();
+        int visibleItemCount = mLayoutManager.getChildCount();
+        int totalItemCount = mLayoutManager.getItemCount();
+        int pastVisibleItems = mLayoutManager.findFirstVisibleItemPosition();
+        if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+            // End of list
+            // Load more item
+            if (isPopulatingData) {
+                return;
+            }
+            dealTable.orderByKey()
+                    .limitToFirst(Constants.ITEM_PER_PAGE)
+                    .startAt(lastRecordKey)
+//                    .addChildEventListener(new DealTableChildEventListener());
+                    .addValueEventListener(new DealTableValueEventListener());
+        }
+    }
+
+    private class DealTableChildEventListener implements ChildEventListener{
+
+        @Override
+        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            Car objDeal = dataSnapshot.getValue(Car.class);
+
+            if (isMatchWithFilter(objDeal)) {
+                lstCar.add(objDeal);
+                lastRecordKey = dataSnapshot.getKey();
+            }
+            adtCar.updateData(lstCar);
+        }
+
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
     }
 
     private class DealTableValueEventListener implements ValueEventListener {
 
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
-            for (DataSnapshot dealer : dataSnapshot.getChildren()) {
-                for (DataSnapshot deal: dealer.getChildren()) {
+            isPopulatingData = true;
+            for (DataSnapshot deal : dataSnapshot.getChildren()) {
+//                for (DataSnapshot deal: dealer.getChildren()) {
                     Car objDeal = deal.getValue(Car.class);
 
                     if (isMatchWithFilter(objDeal)) {
                         lstCar.add(objDeal);
+                        lastRecordKey = deal.getKey();
                     }
-                }
+//                }
             }
             adtCar.updateData(lstCar);
+            Log.d("LISTDATA", "lstCar count: " + lstCar.size());
+            isPopulatingData = false;
         }
 
         @Override

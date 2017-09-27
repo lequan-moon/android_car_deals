@@ -18,7 +18,6 @@ import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
 
 public class MainActivity extends AppCompatActivity implements MaterialTabListener,
-        SearchListFragment.OnFragmentInteractionListener,
         MyGaraFragment.OnFragmentInteractionListener,
         DealsFragment.OnFragmentInteractionListener,
         SettingsFragment.OnFragmentInteractionListener,

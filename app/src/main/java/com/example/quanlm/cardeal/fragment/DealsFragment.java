@@ -114,10 +114,10 @@ public class DealsFragment extends Fragment implements CarAdapter.OnCarSelectLis
         rcvMyDeals = (RecyclerView) view.findViewById(R.id.rcvMyDeals);
 
         lstCar = new ArrayList<>();
-
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         adtCar = new CarAdapter(getContext(), lstCar);
         adtCar.setmCarSelectListener(this);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+
         rcvMyDeals.setLayoutManager(layoutManager);
         rcvMyDeals.setAdapter(adtCar);
     }

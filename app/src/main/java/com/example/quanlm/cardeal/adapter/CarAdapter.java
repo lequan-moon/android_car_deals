@@ -2,6 +2,7 @@ package com.example.quanlm.cardeal.adapter;
 
 import android.content.Context;
 import android.net.Uri;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +25,7 @@ import java.util.List;
  * Created by QuanLM on 8/16/2017.
  */
 
-public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
+public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder>{
     Context mContext;
     List<Car> lstCar;
     OnCarSelectListener mCarSelectListener;
