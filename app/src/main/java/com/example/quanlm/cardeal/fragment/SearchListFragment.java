@@ -137,11 +137,19 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
             // TODO: QuanLM implement all other filter condition
             List filteredBrand = Arrays.asList(mFilter.getBrandCode());
             List filteredCarType = Arrays.asList(mFilter.getCarTypeCode());
-            int priceStart = Integer.valueOf(mFilter.getPriceStart());
-            int priceEnd = Integer.valueOf(mFilter.getPriceEnd());
-            if (Util.isEmptyList(filteredBrand) || filteredBrand.contains(objDeal.getBrand())
-                    && Util.isEmptyList(filteredCarType) || filteredCarType.contains(objDeal.getCarType())
-                    && (priceStart <= Double.valueOf(objDeal.getPrice()) && Double.valueOf(objDeal.getPrice()) <= priceEnd)
+            double priceStart = mFilter.getPriceStartValue();
+            double priceEnd = mFilter.getPriceEndValue();
+            double carPrice;
+            try {
+                carPrice = Double.valueOf(objDeal.getPrice());
+            } catch (NumberFormatException ex) {
+                // If exception then not defined price
+                carPrice = 0;
+            }
+
+            if ((Util.isEmptyList(filteredBrand) || filteredBrand.contains(objDeal.getBrand()))
+                    && (Util.isEmptyList(filteredCarType) || filteredCarType.contains(objDeal.getCarType()))
+                    && (priceStart <= carPrice && carPrice <= priceEnd)
 //                    && Arrays.asList(mFilter.getCarTypeCode()).contains(objDeal.getCarType())
                     ) {
                 return true;
@@ -217,7 +225,6 @@ public class SearchListFragment extends Fragment implements ConditionSearchDialo
         public void onDataChange(DataSnapshot dataSnapshot) {
             for (DataSnapshot dealer : dataSnapshot.getChildren()) {
                 for (DataSnapshot deal: dealer.getChildren()) {
-                    Log.d("DB", "onDataChange: " + deal.getValue());
                     Car objDeal = deal.getValue(Car.class);
 
                     if (isMatchWithFilter(objDeal)) {

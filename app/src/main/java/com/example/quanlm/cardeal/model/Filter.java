@@ -1,5 +1,7 @@
 package com.example.quanlm.cardeal.model;
 
+import static com.example.quanlm.cardeal.configure.Constants.PRICE_UNIT;
+
 /**
  * Created by QuanLM on 8/16/2017.
  */
@@ -19,6 +21,14 @@ public class Filter {
         this.priceEnd = priceEnd;
         this.manufacturedYearStart = manufacturedYearStart;
         this.manufacturedYearEnd = manufacturedYearEnd;
+    }
+
+    public double getPriceStartValue() {
+        return Double.valueOf(getPriceStart()) * PRICE_UNIT;
+    }
+
+    public double getPriceEndValue() {
+        return Double.valueOf(getPriceEnd()) * PRICE_UNIT;
     }
 
     public String[] getBrandCode() {
