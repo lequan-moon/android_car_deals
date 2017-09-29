@@ -18,5 +18,5 @@ public class Constants {
     public static final int PRICE_UNIT = 1000000;
     public static final int FILTER_YEAR_MIN = 1900;
     public static final int FILTER_YEAR_MAX = 2017;
-    public static final int ITEM_PER_PAGE = 10;
+    public static final int ITEM_PER_PAGE = 30;
 }
