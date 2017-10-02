@@ -19,8 +19,8 @@ public class Car implements Serializable {
     String dealerName;
     String dealerPhoneNumber;
     String slogan;
-    List<String> images;
-
+    List<String> images; // Image's path not real Uri
+    List<String> imageUris;
     String dealerDisplayName;
 
     public String getSlogan() {
@@ -141,5 +141,13 @@ public class Car implements Serializable {
 
     public void setImages(List<String> images) {
         this.images = images;
+    }
+
+    public List<String> getImageUris() {
+        return imageUris;
+    }
+
+    public void setImageUris(List<String> imageUris) {
+        this.imageUris = imageUris;
     }
 }
