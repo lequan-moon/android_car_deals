@@ -1,7 +1,9 @@
 package com.example.quanlm.cardeal.fragment;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.quanlm.cardeal.ActCarDetail;
+import com.example.quanlm.cardeal.FetchImageService;
 import com.example.quanlm.cardeal.R;
 import com.example.quanlm.cardeal.adapter.CarAdapter;
 import com.example.quanlm.cardeal.configure.Constants;
@@ -50,37 +53,57 @@ public class SearchListFragment extends Fragment implements
     DatabaseReference dealTable;
     String lastRecordKey;
     private boolean isPopulatingData;
+    FetchImageService mFetchImageService;
+    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(FetchImageService.UPDATE_IMAGE_ACTION)){
+                Bundle args = intent.getBundleExtra(Constants.IMAGE_PACKS);
+                int position = args.getInt(Constants.POSITION);
+                String imageUri = args.getString(Constants.IMAGE_URI);
+                List<Car> lstCar = adtCar.getListdata();
+                Car car = lstCar.get(position);
+                if (car.getImageUris() == null) {
+                    car.setImageUris(new ArrayList<String>());
+                }
+                car.getImageUris().add(imageUri);
+//                Log.d("fetchImage", "position: " + position);
+//                Log.d("fetchImage", "onReceive: " + imageUri);
+//                Log.d("fetchImage", "lstCar size: " + lstCar.size());
+                adtCar.updateData(lstCar);
+            }
+        }
+    };
 
+    IntentFilter intentFilter;
 
     public SearchListFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SearchListFragment.
-     */
-    public static SearchListFragment newInstance(String param1, String param2) {
+    public static SearchListFragment newInstance(String param1, FetchImageService fetchImageService) {
         SearchListFragment fragment = new SearchListFragment();
+        fragment.setmFetchImageService(fetchImageService);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        resgisterBroadcast();
         return inflater.inflate(R.layout.fragment_search_list, container, false);
+    }
+
+    private void resgisterBroadcast(){
+        intentFilter = new IntentFilter(FetchImageService.UPDATE_IMAGE_ACTION);
+        getActivity().registerReceiver(broadcastReceiver, intentFilter);
     }
 
     @Override
@@ -118,6 +141,7 @@ public class SearchListFragment extends Fragment implements
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         adtCar = new CarAdapter(getContext(), lstCar);
         adtCar.setmCarSelectListener(this);
+        adtCar.setmFetchImageService(mFetchImageService);
 
         rcvCarList.setLayoutManager(layoutManager);
         rcvCarList.setAdapter(adtCar);
@@ -199,6 +223,16 @@ public class SearchListFragment extends Fragment implements
         }
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        getActivity().unregisterReceiver(broadcastReceiver);
+    }
+
+    public void setmFetchImageService(FetchImageService mFetchImageService) {
+        this.mFetchImageService = mFetchImageService;
+    }
+
     private class DealTableChildEventListener implements ChildEventListener{
 
         @Override
@@ -242,6 +276,7 @@ public class SearchListFragment extends Fragment implements
 //                for (DataSnapshot deal: dealer.getChildren()) {
                     Car objDeal = deal.getValue(Car.class);
 
+//                    mFetchImageService.fetchImageForAdapter(lstCar.size(), objDeal.getImages().get(0));
                     if (isMatchWithFilter(objDeal)) {
                         lstCar.add(objDeal);
                         lastRecordKey = deal.getKey();

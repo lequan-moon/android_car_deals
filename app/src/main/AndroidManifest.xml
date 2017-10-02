@@ -33,12 +33,24 @@
         </provider>
 
         <activity android:name=".ActLogin">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
+
+        <service
+            android:name=".FetchImageService"
+            android:enabled="true"
+            android:exported="true"></service>
+        <!--<receiver android:name=".util.FetchImageBroadcastReceiver">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="update_image_action"/>-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
     </application>
 
 </manifest>

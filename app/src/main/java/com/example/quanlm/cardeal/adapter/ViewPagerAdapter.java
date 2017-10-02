@@ -10,6 +10,7 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.quanlm.cardeal.FetchImageService;
 import com.example.quanlm.cardeal.fragment.DealsFragment;
 import com.example.quanlm.cardeal.fragment.MyAccountFragment;
 import com.example.quanlm.cardeal.fragment.MyGaraFragment;
@@ -21,9 +22,11 @@ import com.example.quanlm.cardeal.fragment.SettingsFragment;
  */
 
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
+    FetchImageService mFetchImageService;
 
-    public ViewPagerAdapter(FragmentManager fm) {
+    public ViewPagerAdapter(FragmentManager fm, FetchImageService fetchImageService) {
         super(fm);
+        mFetchImageService = fetchImageService;
     }
 
     @Override
@@ -31,7 +34,7 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
         Fragment fragment;
         switch (position){
             case 0:
-                fragment = SearchListFragment.newInstance("param1", "param2");
+                fragment = SearchListFragment.newInstance("param1", mFetchImageService);
                 break;
             case 1:
                 fragment = MyGaraFragment.newInstance("", "");
@@ -46,7 +49,7 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
                 fragment = SettingsFragment.newInstance("", "");
                 break;
             default:
-                fragment = SearchListFragment.newInstance("param1", "param2");
+                fragment = SearchListFragment.newInstance("param1", mFetchImageService);
                 break;
         }
         return fragment;

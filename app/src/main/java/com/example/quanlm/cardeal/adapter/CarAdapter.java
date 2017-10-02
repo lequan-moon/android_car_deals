@@ -1,8 +1,6 @@
 package com.example.quanlm.cardeal.adapter;
 
 import android.content.Context;
-import android.net.Uri;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,12 +10,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.daimajia.slider.library.SliderLayout;
-import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
+import com.example.quanlm.cardeal.FetchImageService;
 import com.example.quanlm.cardeal.R;
 import com.example.quanlm.cardeal.model.Car;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
@@ -25,11 +23,13 @@ import java.util.List;
  * Created by QuanLM on 8/16/2017.
  */
 
-public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder>{
+public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
     Context mContext;
     List<Car> lstCar;
     OnCarSelectListener mCarSelectListener;
     FirebaseStorage mStorage;
+    FetchImageService mFetchImageService;
+//    FetchImageBroadcastReceiver mFetchImageReceiver = new FetchImageBroadcastReceiver(this);
 
     public CarAdapter(Context mContext, List<Car> lstCar) {
         this.mContext = mContext;
@@ -52,36 +52,37 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder>{
         holder.carItemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mCarSelectListener != null){
+                if (mCarSelectListener != null) {
                     mCarSelectListener.onCarSelect(car);
                 }
             }
         });
         if (car.getImages() != null && car.getImages().size() > 0) {
-            Task<Uri> imageUrl = null;
-            if (car.getImages().size() > 0) {
-                imageUrl = mStorage.getReferenceFromUrl(car.getImages().get(0)).getDownloadUrl();
-            }
-
-            if(imageUrl != null) {
-                imageUrl.addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        Glide.with(mContext)
-                                .load(uri)
-                                .placeholder(R.drawable.no_image_car)
-                                .fitCenter()
-                                .into(holder.imgCarThumb);
-                    }
-                });
-
-            }
-        } else {
+            StorageReference imageRef = mStorage.getReferenceFromUrl(car.getImages().get(0));
             Glide.with(mContext)
-                    .load(R.drawable.no_image_car)
-                    .fitCenter()
+                    .using(new FirebaseImageLoader())
+                    .load(imageRef)
                     .into(holder.imgCarThumb);
         }
+//        if (car.getImageUris() != null && car.getImageUris().size() > 0) {
+//            String topImageUri = car.getImageUris().get(0);
+//            if (topImageUri != null) {
+//                Glide.with(mContext)
+//                        .load(topImageUri)
+//                        .placeholder(R.drawable.no_image_car)
+//                        .fitCenter()
+//                        .into(holder.imgCarThumb);
+//            }
+//        } else {
+//            Glide.with(mContext)
+//                    .load(R.drawable.no_image_car)
+//                    .fitCenter()
+//                    .into(holder.imgCarThumb);
+//        }
+//        if (car.getImages() != null && car.getImages().size() > 0) {
+////            Log.d("fetchImage", "call service");
+////            mFetchImageService.fetchImageForAdapter(position, car.getImages().get(0));
+//        }
     }
 
     @Override
@@ -89,9 +90,17 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder>{
         return lstCar.size();
     }
 
-    public void updateData(List<Car> lstCar){
+    public List<Car> getListdata() {
+        return lstCar;
+    }
+
+    public void updateData(List<Car> lstCar) {
         this.lstCar = lstCar;
         notifyDataSetChanged();
+    }
+
+    public void setmFetchImageService(FetchImageService mFetchImageService) {
+        this.mFetchImageService = mFetchImageService;
     }
 
     public class CarViewHolder extends RecyclerView.ViewHolder {

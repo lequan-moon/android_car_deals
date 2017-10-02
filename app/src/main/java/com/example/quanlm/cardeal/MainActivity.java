@@ -1,6 +1,10 @@
 package com.example.quanlm.cardeal;
 
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.net.Uri;
+import android.os.IBinder;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,6 +29,41 @@ public class MainActivity extends AppCompatActivity implements MaterialTabListen
 
     MaterialTabHost tabHost;
     ViewPager pager;
+    FetchImageService mFetchImageService;
+    boolean isBound = false;
+    ServiceConnection mServiceConnn = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            FetchImageService.FetchImageServiceBinder binder = (FetchImageService.FetchImageServiceBinder)service;
+            isBound = true;
+            mFetchImageService = binder.getService();
+
+            // init view pager
+            ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), mFetchImageService);
+            pager.setAdapter(pagerAdapter);
+            pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+                @Override
+                public void onPageSelected(int position) {
+                    // when user do a swipe the selected tab change
+                    tabHost.setSelectedNavigationItem(position);
+                }
+            });
+
+            // insert all tabs from pagerAdapter data
+            for (int i = 0; i < pagerAdapter.getCount(); i++) {
+                tabHost.addTab(
+                        tabHost.newTab()
+                                .setText(pagerAdapter.getPageTitle(i))
+                                .setTabListener(MainActivity.this)
+                );
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            isBound = false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,25 +82,6 @@ public class MainActivity extends AppCompatActivity implements MaterialTabListen
         tabHost = (MaterialTabHost) findViewById(R.id.mainContainer);
         pager = (ViewPager) this.findViewById(R.id.pager);
 
-        // init view pager
-        ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        pager.setAdapter(pagerAdapter);
-        pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                // when user do a swipe the selected tab change
-                tabHost.setSelectedNavigationItem(position);
-            }
-        });
-
-        // insert all tabs from pagerAdapter data
-        for (int i = 0; i < pagerAdapter.getCount(); i++) {
-            tabHost.addTab(
-                    tabHost.newTab()
-                            .setText(pagerAdapter.getPageTitle(i))
-                            .setTabListener(this)
-            );
-        }
     }
 
     @Override
@@ -82,5 +102,22 @@ public class MainActivity extends AppCompatActivity implements MaterialTabListen
     @Override
     public void onFragmentInteraction(Uri uri) {
         Toast.makeText(this, "URI: " + uri, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intent = new Intent(this, FetchImageService.class);
+
+        bindService(intent, mServiceConnn, BIND_AUTO_CREATE);
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (isBound) {
+            unbindService(mServiceConnn);
+        }
     }
 }
