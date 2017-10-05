@@ -61,6 +61,62 @@
           "status": 2
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:596983284900:android:361d0cc232f36fca",
+        "android_client_info": {
+          "package_name": "com.moudevops.quanlm.cardeal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "596983284900-9hkbjceic9c2iskf5evsf0s0cslcftnk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.moudevops.quanlm.cardeal",
+            "certificate_hash": "66117bc1a837caa4180ac8c43e4cb760f75e5547"
+          }
+        },
+        {
+          "client_id": "596983284900-1mfn24dsc5kooqrehnjjvtkqh1joh4np.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.moudevops.quanlm.cardeal",
+            "certificate_hash": "264b46561810b7c4498c19aae9438db8adfdf5ee"
+          }
+        },
+        {
+          "client_id": "596983284900-e53s4o00ijdimu5oieujb46svo4e7dta.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "596983284900-nft2puju8rudelf0a60gevsoglrs7mrq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCI50j2_SlTDmZvElAPHAgUPQG9REWYDA0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "596983284900-e53s4o00ijdimu5oieujb46svo4e7dta.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
     }
   ],
   "configuration_version": "1"

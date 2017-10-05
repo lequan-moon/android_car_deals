@@ -1,4 +1,4 @@
-package com.example.quanlm.cardeal.model;
+package com.moudevops.quanlm.cardeal.model;
 
 /**
  * Created by MyPC on 27/08/2017.

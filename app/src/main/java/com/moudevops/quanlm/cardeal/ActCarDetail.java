@@ -1,4 +1,4 @@
-package com.example.quanlm.cardeal;
+package com.moudevops.quanlm.cardeal;
 
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -6,24 +6,17 @@ import android.support.v4.util.ArraySet;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
-import com.example.quanlm.cardeal.configure.Constants;
-import com.example.quanlm.cardeal.model.Car;
-import com.example.quanlm.cardeal.util.Util;
+import com.moudevops.quanlm.cardeal.configure.Constants;
+import com.moudevops.quanlm.cardeal.model.Car;
+import com.moudevops.quanlm.cardeal.util.Util;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.Set;

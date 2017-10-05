@@ -1,4 +1,4 @@
-package com.example.quanlm.cardeal.model;
+package com.moudevops.quanlm.cardeal.model;
 
 import android.widget.ImageView;
 

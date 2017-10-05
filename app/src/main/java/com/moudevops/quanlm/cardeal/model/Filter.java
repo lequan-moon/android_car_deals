@@ -1,6 +1,6 @@
-package com.example.quanlm.cardeal.model;
+package com.moudevops.quanlm.cardeal.model;
 
-import static com.example.quanlm.cardeal.configure.Constants.PRICE_UNIT;
+import static com.moudevops.quanlm.cardeal.configure.Constants.PRICE_UNIT;
 
 /**
  * Created by QuanLM on 8/16/2017.

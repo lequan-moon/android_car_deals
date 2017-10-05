@@ -1,6 +1,4 @@
-package com.example.quanlm.cardeal.model;
-
-import android.net.Uri;
+package com.moudevops.quanlm.cardeal.model;
 
 import java.io.Serializable;
 import java.util.List;

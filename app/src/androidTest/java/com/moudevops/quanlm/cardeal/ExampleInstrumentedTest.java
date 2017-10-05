@@ -1,4 +1,4 @@
-package com.example.quanlm.cardeal;
+package com.moudevops.quanlm.cardeal;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

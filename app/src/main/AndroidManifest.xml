@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.quanlm.cardeal">
+    package="com.moudevops.quanlm.cardeal">
 
     <permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -12,19 +12,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name="com.moudevops.quanlm.cardeal.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ActCarDetail" />
-        <activity android:name=".ActAddCarDealStep" />
+        <activity android:name="com.moudevops.quanlm.cardeal.ActCarDetail" />
+        <activity android:name="com.moudevops.quanlm.cardeal.ActAddCarDealStep" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.example.quanlm.cardeal.fileprovider"
+            android:authorities="com.moudevops.quanlm.cardeal.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -32,7 +32,7 @@
                 android:resource="@xml/file_paths_public" />
         </provider>
 
-        <activity android:name=".ActLogin">
+        <activity android:name="com.moudevops.quanlm.cardeal.ActLogin">
             <!--<intent-filter>-->
                 <!--<action android:name="android.intent.action.MAIN" />-->
 

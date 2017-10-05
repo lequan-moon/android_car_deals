@@ -1,14 +1,12 @@
-package com.example.quanlm.cardeal;
+package com.moudevops.quanlm.cardeal;
 
 import android.animation.Animator;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,14 +20,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.quanlm.cardeal.adapter.CarThumbAdapter;
-import com.example.quanlm.cardeal.adapter.SingleChoiceBrandAdapter;
-import com.example.quanlm.cardeal.adapter.SingleChoiceCarTypeAdapter;
-import com.example.quanlm.cardeal.configure.Constants;
-import com.example.quanlm.cardeal.model.Brand;
-import com.example.quanlm.cardeal.model.Car;
-import com.example.quanlm.cardeal.model.CarType;
-import com.example.quanlm.cardeal.util.Util;
+import com.moudevops.quanlm.cardeal.adapter.CarThumbAdapter;
+import com.moudevops.quanlm.cardeal.adapter.SingleChoiceBrandAdapter;
+import com.moudevops.quanlm.cardeal.adapter.SingleChoiceCarTypeAdapter;
+import com.moudevops.quanlm.cardeal.configure.Constants;
+import com.moudevops.quanlm.cardeal.model.Brand;
+import com.moudevops.quanlm.cardeal.model.Car;
+import com.moudevops.quanlm.cardeal.model.CarType;
+import com.moudevops.quanlm.cardeal.util.Util;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;

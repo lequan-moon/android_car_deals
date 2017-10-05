@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    tools:context="com.example.quanlm.cardeal.ActAddCarDealStep">
+    tools:context="com.moudevops.quanlm.cardeal.ActAddCarDealStep">
     <Button
         android:id="@+id/btnLogin"
         android:text="LOGIN"

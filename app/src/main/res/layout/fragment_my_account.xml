@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.quanlm.cardeal.fragment.MyAccountFragment">
+    tools:context="com.moudevops.quanlm.cardeal.fragment.MyAccountFragment">
 
     <LinearLayout
         android:layout_margin="16dp"

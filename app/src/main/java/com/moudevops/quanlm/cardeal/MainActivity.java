@@ -1,4 +1,4 @@
-package com.example.quanlm.cardeal;
+package com.moudevops.quanlm.cardeal;
 
 import android.net.Uri;
 import android.support.v4.view.ViewPager;
@@ -6,12 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import com.example.quanlm.cardeal.adapter.ViewPagerAdapter;
-import com.example.quanlm.cardeal.fragment.DealsFragment;
-import com.example.quanlm.cardeal.fragment.MyAccountFragment;
-import com.example.quanlm.cardeal.fragment.MyGaraFragment;
-import com.example.quanlm.cardeal.fragment.SearchListFragment;
-import com.example.quanlm.cardeal.fragment.SettingsFragment;
+import com.moudevops.quanlm.cardeal.adapter.ViewPagerAdapter;
+import com.moudevops.quanlm.cardeal.fragment.DealsFragment;
+import com.moudevops.quanlm.cardeal.fragment.MyAccountFragment;
+import com.moudevops.quanlm.cardeal.fragment.MyGaraFragment;
+import com.moudevops.quanlm.cardeal.fragment.SettingsFragment;
 
 import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;

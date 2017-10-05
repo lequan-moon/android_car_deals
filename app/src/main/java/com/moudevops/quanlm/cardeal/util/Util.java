@@ -1,10 +1,9 @@
-package com.example.quanlm.cardeal.util;
+package com.moudevops.quanlm.cardeal.util;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
-import com.example.quanlm.cardeal.model.Car;
+import com.moudevops.quanlm.cardeal.model.Car;
 
 import java.io.File;
 import java.io.FileInputStream;
