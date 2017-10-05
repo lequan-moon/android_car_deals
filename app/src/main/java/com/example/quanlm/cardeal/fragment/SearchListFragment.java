@@ -28,6 +28,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,7 +37,7 @@ import java.util.List;
 public class SearchListFragment extends Fragment implements
         ConditionSearchDialogFragment.OnSearchConditionChangedListener,
         CarAdapter.OnCarSelectListener,
-        View.OnScrollChangeListener{
+        View.OnScrollChangeListener {
 
     FloatingActionButton btnSearch;
 
@@ -125,9 +126,10 @@ public class SearchListFragment extends Fragment implements
 
         dealTable = mDatabase.getReference(Constants.DEAL_TABLE);
         dealTable.orderByKey()
-                .limitToFirst(Constants.ITEM_PER_PAGE)
+                // Get Constants.ITEM_PER_PAGE + 1 item
+                // to keep the last record as key to load more later
+                .limitToFirst(Constants.ITEM_PER_PAGE + 1)
                 .addValueEventListener(new DealTableValueEventListener());
-//                .addChildEventListener(new DealTableChildEventListener());
     }
 
     private boolean isMatchWithFilter(Car objDeal) {
@@ -149,7 +151,6 @@ public class SearchListFragment extends Fragment implements
             if ((Util.isEmptyList(filteredBrand) || filteredBrand.contains(objDeal.getBrand()))
                     && (Util.isEmptyList(filteredCarType) || filteredCarType.contains(objDeal.getCarType()))
                     && (priceStart <= carPrice && carPrice <= priceEnd)
-//                    && Arrays.asList(mFilter.getCarTypeCode()).contains(objDeal.getCarType())
                     ) {
                 return true;
             } else {
@@ -192,65 +193,35 @@ public class SearchListFragment extends Fragment implements
                 return;
             }
             dealTable.orderByKey()
-                    .limitToFirst(Constants.ITEM_PER_PAGE)
+                    .limitToFirst(Constants.ITEM_PER_PAGE + 1)
                     .startAt(lastRecordKey)
-//                    .addChildEventListener(new DealTableChildEventListener());
                     .addValueEventListener(new DealTableValueEventListener());
+            isPopulatingData = true;
         }
     }
 
-    private class DealTableChildEventListener implements ChildEventListener{
-
-        @Override
-        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            Car objDeal = dataSnapshot.getValue(Car.class);
-
-            if (isMatchWithFilter(objDeal)) {
-                lstCar.add(objDeal);
-                lastRecordKey = dataSnapshot.getKey();
-            }
-            adtCar.updateData(lstCar);
-        }
-
-        @Override
-        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-        }
-
-        @Override
-        public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-        }
-
-        @Override
-        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-        }
-
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-
-        }
+    public void setPopulatingState(boolean state) {
+        isPopulatingData = state;
     }
 
     private class DealTableValueEventListener implements ValueEventListener {
 
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
-            isPopulatingData = true;
+            int dealCnt = 0;
             for (DataSnapshot deal : dataSnapshot.getChildren()) {
-//                for (DataSnapshot deal: dealer.getChildren()) {
-                    Car objDeal = deal.getValue(Car.class);
-
-                    if (isMatchWithFilter(objDeal)) {
+                Car objDeal = deal.getValue(Car.class);
+                if (isMatchWithFilter(objDeal)) {
+                    if (dealCnt < dataSnapshot.getChildrenCount()) {
                         lstCar.add(objDeal);
-                        lastRecordKey = deal.getKey();
                     }
-//                }
+                    lastRecordKey = deal.getKey();
+                }
             }
+            dealCnt++;
             adtCar.updateData(lstCar);
             Log.d("LISTDATA", "lstCar count: " + lstCar.size());
-            isPopulatingData = false;
+            setPopulatingState(false);
         }
 
         @Override
