@@ -1,9 +1,8 @@
-package com.example.quanlm.cardeal.adapter;
+package com.moudevops.quanlm.cardeal.adapter;
 
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,18 +13,15 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.daimajia.slider.library.SliderLayout;
-import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
-import com.example.quanlm.cardeal.R;
-import com.example.quanlm.cardeal.model.Car;
-import com.example.quanlm.cardeal.model.ImageEntry;
+import com.moudevops.quanlm.cardeal.R;
+import com.moudevops.quanlm.cardeal.model.Car;
+import com.moudevops.quanlm.cardeal.model.ImageEntry;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**

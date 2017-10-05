@@ -1,4 +1,4 @@
-package com.example.quanlm.cardeal.adapter;
+package com.moudevops.quanlm.cardeal.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,8 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.quanlm.cardeal.R;
-import com.example.quanlm.cardeal.model.Brand;
+import com.moudevops.quanlm.cardeal.R;
+import com.moudevops.quanlm.cardeal.model.Brand;
 
 import java.util.ArrayList;
 import java.util.List;

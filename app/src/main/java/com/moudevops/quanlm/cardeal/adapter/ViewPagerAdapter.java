@@ -1,20 +1,14 @@
-package com.example.quanlm.cardeal.adapter;
+package com.moudevops.quanlm.cardeal.adapter;
 
-import android.content.Context;
-import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.view.View;
-import android.widget.Toast;
 
-import com.example.quanlm.cardeal.fragment.DealsFragment;
-import com.example.quanlm.cardeal.fragment.MyAccountFragment;
-import com.example.quanlm.cardeal.fragment.MyGaraFragment;
-import com.example.quanlm.cardeal.fragment.SearchListFragment;
-import com.example.quanlm.cardeal.fragment.SettingsFragment;
+import com.moudevops.quanlm.cardeal.fragment.DealsFragment;
+import com.moudevops.quanlm.cardeal.fragment.MyAccountFragment;
+import com.moudevops.quanlm.cardeal.fragment.MyGaraFragment;
+import com.moudevops.quanlm.cardeal.fragment.SearchListFragment;
+import com.moudevops.quanlm.cardeal.fragment.SettingsFragment;
 
 /**
  * Created by QuanLM on 8/16/2017.

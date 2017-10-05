@@ -1,8 +1,6 @@
-package com.example.quanlm.cardeal.fragment;
+package com.moudevops.quanlm.cardeal.fragment;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -15,20 +13,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.quanlm.cardeal.ActCarDetail;
-import com.example.quanlm.cardeal.R;
-import com.example.quanlm.cardeal.adapter.CarAdapter;
-import com.example.quanlm.cardeal.configure.Constants;
-import com.example.quanlm.cardeal.model.Car;
-import com.example.quanlm.cardeal.model.Filter;
-import com.example.quanlm.cardeal.util.Util;
-import com.google.firebase.database.ChildEventListener;
+import com.moudevops.quanlm.cardeal.ActCarDetail;
+import com.moudevops.quanlm.cardeal.R;
+import com.moudevops.quanlm.cardeal.adapter.CarAdapter;
+import com.moudevops.quanlm.cardeal.configure.Constants;
+import com.moudevops.quanlm.cardeal.model.Car;
+import com.moudevops.quanlm.cardeal.model.Filter;
+import com.moudevops.quanlm.cardeal.util.Util;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.Arrays;

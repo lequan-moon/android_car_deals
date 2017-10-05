@@ -1,4 +1,4 @@
-package com.example.quanlm.cardeal.fragment;
+package com.moudevops.quanlm.cardeal.fragment;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,12 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.quanlm.cardeal.ActAddCarDealStep;
-import com.example.quanlm.cardeal.ActCarDetail;
-import com.example.quanlm.cardeal.R;
-import com.example.quanlm.cardeal.adapter.CarAdapter;
-import com.example.quanlm.cardeal.configure.Constants;
-import com.example.quanlm.cardeal.model.Car;
+import com.moudevops.quanlm.cardeal.ActAddCarDealStep;
+import com.moudevops.quanlm.cardeal.ActCarDetail;
+import com.moudevops.quanlm.cardeal.R;
+import com.moudevops.quanlm.cardeal.adapter.CarAdapter;
+import com.moudevops.quanlm.cardeal.configure.Constants;
+import com.moudevops.quanlm.cardeal.model.Car;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;

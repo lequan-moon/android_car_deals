@@ -1,4 +1,4 @@
-package com.example.quanlm.cardeal.adapter;
+package com.moudevops.quanlm.cardeal.adapter;
 
 import android.content.Context;
 import android.net.Uri;
@@ -10,8 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.example.quanlm.cardeal.R;
-import com.zhihu.matisse.engine.impl.GlideEngine;
+import com.moudevops.quanlm.cardeal.R;
 
 import java.util.List;
 

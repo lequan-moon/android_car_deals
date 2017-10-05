@@ -1,4 +1,4 @@
-package com.example.quanlm.cardeal.fragment;
+package com.moudevops.quanlm.cardeal.fragment;
 
 import android.content.Context;
 import android.net.Uri;
@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.quanlm.cardeal.R;
+import com.moudevops.quanlm.cardeal.R;
 
 /**
  * A simple {@link Fragment} subclass.

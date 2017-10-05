@@ -1,9 +1,9 @@
-package com.example.quanlm.cardeal.adapter;
+package com.moudevops.quanlm.cardeal.adapter;
 
 import android.content.Context;
 import android.view.View;
 
-import com.example.quanlm.cardeal.model.CarType;
+import com.moudevops.quanlm.cardeal.model.CarType;
 
 import java.util.List;
 

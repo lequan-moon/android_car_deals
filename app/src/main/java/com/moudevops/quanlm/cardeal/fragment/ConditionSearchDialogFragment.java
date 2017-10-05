@@ -1,4 +1,4 @@
-package com.example.quanlm.cardeal.fragment;
+package com.moudevops.quanlm.cardeal.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,13 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.quanlm.cardeal.R;
-import com.example.quanlm.cardeal.adapter.BrandAdapter;
-import com.example.quanlm.cardeal.adapter.CarTypeAdapter;
-import com.example.quanlm.cardeal.configure.Constants;
-import com.example.quanlm.cardeal.model.Brand;
-import com.example.quanlm.cardeal.model.CarType;
-import com.example.quanlm.cardeal.model.Filter;
+import com.moudevops.quanlm.cardeal.R;
+import com.moudevops.quanlm.cardeal.adapter.BrandAdapter;
+import com.moudevops.quanlm.cardeal.adapter.CarTypeAdapter;
+import com.moudevops.quanlm.cardeal.configure.Constants;
+import com.moudevops.quanlm.cardeal.model.Brand;
+import com.moudevops.quanlm.cardeal.model.CarType;
+import com.moudevops.quanlm.cardeal.model.Filter;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

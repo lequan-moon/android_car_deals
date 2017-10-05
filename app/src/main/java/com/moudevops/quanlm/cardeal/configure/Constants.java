@@ -1,6 +1,4 @@
-package com.example.quanlm.cardeal.configure;
-
-import com.google.firebase.FirebaseApp;
+package com.moudevops.quanlm.cardeal.configure;
 
 /**
  * Created by QuanLM on 8/22/2017.

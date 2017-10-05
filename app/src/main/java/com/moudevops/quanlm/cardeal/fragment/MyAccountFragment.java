@@ -1,4 +1,4 @@
-package com.example.quanlm.cardeal.fragment;
+package com.moudevops.quanlm.cardeal.fragment;
 
 import android.app.Activity;
 import android.content.Context;
@@ -19,8 +19,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.example.quanlm.cardeal.ActLogin;
-import com.example.quanlm.cardeal.R;
+import com.moudevops.quanlm.cardeal.ActLogin;
+import com.moudevops.quanlm.cardeal.R;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
