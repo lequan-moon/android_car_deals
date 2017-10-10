@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.daimajia.slider.library.SliderLayout;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.storage.StorageReference;
 import com.moudevops.quanlm.cardeal.R;
 import com.moudevops.quanlm.cardeal.model.Car;
 import com.moudevops.quanlm.cardeal.model.ImageEntry;
@@ -33,43 +35,11 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
     List<Car> lstCar;
     OnCarSelectListener mCarSelectListener;
     FirebaseStorage mStorage;
-    LinkedBlockingQueue<Map.Entry<String, ImageView>> queueImageRef;
 
     public CarAdapter(Context mContext, List<Car> lstCar) {
         this.mContext = mContext;
         this.lstCar = lstCar;
         mStorage = FirebaseStorage.getInstance();
-        queueImageRef = new LinkedBlockingQueue<>();
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        Log.d("AsyncTask", "ActiveDownloadTasks: " + mStorage.getReference().getActiveDownloadTasks().size());
-                        if (queueImageRef.size() > 0
-                                && mStorage.getReference().getActiveDownloadTasks().size() < 128) {
-
-                            final Map.Entry<String, ImageView> imageUrlEntry = queueImageRef.poll();
-                            Task<Uri> downloadTask = mStorage.getReferenceFromUrl(imageUrlEntry.getKey()).getDownloadUrl();
-                            Log.d("AsyncTask", "Downloading: " + imageUrlEntry.getKey());
-                            downloadTask.addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    Glide.with(CarAdapter.this.mContext)
-                                            .load(uri)
-                                            .placeholder(R.drawable.no_image_car)
-                                            .fitCenter()
-                                            .into(imageUrlEntry.getValue());
-                                }
-                            });
-                        }
-                        Thread.sleep(300);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
     }
 
     @Override
@@ -93,25 +63,12 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
             }
         });
         if (car.getImages() != null && car.getImages().size() > 0) {
-//            Task<Uri> imageUrl = null;
-            if (car.getImages().size() > 0) {
-
-                queueImageRef.add(new ImageEntry(car.getImages().get(0), holder.imgCarThumb));
-//                imageUrl = mStorage.getReferenceFromUrl(car.getImages().get(0)).getDownloadUrl();
-            }
-
-//            if(imageUrl != null) {
-//                imageUrl.addOnSuccessListener(new OnSuccessListener<Uri>() {
-//                    @Override
-//                    public void onSuccess(Uri uri) {
-//                        Glide.with(mContext)
-//                                .load(uri)
-//                                .placeholder(R.drawable.no_image_car)
-//                                .fitCenter()
-//                                .into(holder.imgCarThumb);
-//                    }
-//                });
-//            }
+             StorageReference imageRef = mStorage.getReferenceFromUrl(car.getImages().get(0));
+             Glide.with(mContext)
+                     .using(new FirebaseImageLoader())
+                     .load(imageRef)
+                     .fitCenter()
+                     .into(holder.imgCarThumb);
         } else {
             Glide.with(mContext)
                     .load(R.drawable.no_image_car)

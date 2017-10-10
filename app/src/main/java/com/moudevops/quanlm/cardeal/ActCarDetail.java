@@ -1,6 +1,8 @@
 package com.moudevops.quanlm.cardeal;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.support.v4.util.ArraySet;
 import android.support.v7.app.AppCompatActivity;
