@@ -63,10 +63,10 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
             }
         });
         if (car.getImages() != null && car.getImages().size() > 0) {
-             StorageReference imageRef = mStorage.getReferenceFromUrl(car.getImages().get(0));
+            String topImageUri = car.getImages().get(0);
+//             StorageReference imageRef = mStorage.getReferenceFromUrl(car.getImages().get(0));
              Glide.with(mContext)
-                     .using(new FirebaseImageLoader())
-                     .load(imageRef)
+                     .load(topImageUri)
                      .fitCenter()
                      .into(holder.imgCarThumb);
         } else {

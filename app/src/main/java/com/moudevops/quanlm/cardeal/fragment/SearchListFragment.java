@@ -122,11 +122,11 @@ public class SearchListFragment extends Fragment implements
 
         dealTable = mDatabase.getReference(Constants.DEAL_TABLE);
         dealTable
-//                .orderByKey()
+                .orderByKey()
                 // Get Constants.ITEM_PER_PAGE + 1 item
                 // to keep the last record as key to load more later
-//                .limitToFirst(Constants.ITEM_PER_PAGE + 1)
-                .addValueEventListener(new DealTableValueEventListener());
+                .limitToFirst(Constants.ITEM_PER_PAGE + 1)
+                .addListenerForSingleValueEvent(new DealTableValueEventListener());
     }
 
     private boolean isMatchWithFilter(Car objDeal) {
@@ -179,22 +179,22 @@ public class SearchListFragment extends Fragment implements
 
     @Override
     public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-//        LinearLayoutManager mLayoutManager = (LinearLayoutManager) rcvCarList.getLayoutManager();
-//        int visibleItemCount = mLayoutManager.getChildCount();
-//        int totalItemCount = mLayoutManager.getItemCount();
-//        int pastVisibleItems = mLayoutManager.findFirstVisibleItemPosition();
-//        if (pastVisibleItems + visibleItemCount >= totalItemCount) {
-//            // End of list
-//            // Load more item
-//            if (isPopulatingData) {
-//                return;
-//            }
-//            dealTable.orderByKey()
-////                    .limitToFirst(Constants.ITEM_PER_PAGE + 1)
-////                    .startAt(lastRecordKey)
-//                    .addValueEventListener(new DealTableValueEventListener());
-//            isPopulatingData = true;
-//        }
+        LinearLayoutManager mLayoutManager = (LinearLayoutManager) rcvCarList.getLayoutManager();
+        int visibleItemCount = mLayoutManager.getChildCount();
+        int totalItemCount = mLayoutManager.getItemCount();
+        int pastVisibleItems = mLayoutManager.findFirstVisibleItemPosition();
+        if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+            // End of list
+            // Load more item
+            if (isPopulatingData) {
+                return;
+            }
+            dealTable.orderByKey()
+                    .limitToFirst(Constants.ITEM_PER_PAGE + 1)
+                    .startAt(lastRecordKey)
+                    .addListenerForSingleValueEvent(new DealTableValueEventListener());
+            isPopulatingData = true;
+        }
     }
 
     public void setPopulatingState(boolean state) {
@@ -205,6 +205,10 @@ public class SearchListFragment extends Fragment implements
 
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
+            if (dataSnapshot.getChildrenCount() == 1) {
+                // Last item
+                return;
+            }
             for (DataSnapshot deal : dataSnapshot.getChildren()) {
                 Car objDeal = deal.getValue(Car.class);
                 if (isMatchWithFilter(objDeal)) {
