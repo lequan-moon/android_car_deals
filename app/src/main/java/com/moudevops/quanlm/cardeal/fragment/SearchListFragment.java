@@ -19,6 +19,7 @@ import com.moudevops.quanlm.cardeal.adapter.CarAdapter;
 import com.moudevops.quanlm.cardeal.configure.Constants;
 import com.moudevops.quanlm.cardeal.model.Car;
 import com.moudevops.quanlm.cardeal.model.Filter;
+import com.moudevops.quanlm.cardeal.util.FirebaseUtil;
 import com.moudevops.quanlm.cardeal.util.Util;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -47,6 +48,7 @@ public class SearchListFragment extends Fragment implements
     DatabaseReference dealTable;
     String lastRecordKey;
     private boolean isPopulatingData;
+    private FirebaseUtil firebaseUtil;
 
 
     public SearchListFragment() {
@@ -69,8 +71,6 @@ public class SearchListFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
     }
 
     @Override
@@ -104,7 +104,7 @@ public class SearchListFragment extends Fragment implements
     }
 
     private void initControls(View view) {
-
+        firebaseUtil = FirebaseUtil.getInstance();
         mDatabase = FirebaseDatabase.getInstance();
 
         btnSearch = (FloatingActionButton) view.findViewById(R.id.btnSearch);
@@ -120,13 +120,7 @@ public class SearchListFragment extends Fragment implements
         rcvCarList.setAdapter(adtCar);
         rcvCarList.setOnScrollChangeListener(this);
 
-        dealTable = mDatabase.getReference(Constants.DEAL_TABLE);
-        dealTable
-                .orderByKey()
-                // Get Constants.ITEM_PER_PAGE + 1 item
-                // to keep the last record as key to load more later
-                .limitToFirst(Constants.ITEM_PER_PAGE + 1)
-                .addListenerForSingleValueEvent(new DealTableValueEventListener());
+        firebaseUtil.fetchFirebaseDeals(new DealTableValueEventListener());
     }
 
     private boolean isMatchWithFilter(Car objDeal) {
@@ -163,8 +157,7 @@ public class SearchListFragment extends Fragment implements
         mFilter = filter;
 
         lstCar.clear();
-        DatabaseReference dealTable = mDatabase.getReference(Constants.DEAL_TABLE);
-        dealTable.addValueEventListener(new DealTableValueEventListener());
+        firebaseUtil.fetchFirebaseDeals(new DealTableValueEventListener());
     }
 
     @Override
@@ -189,10 +182,7 @@ public class SearchListFragment extends Fragment implements
             if (isPopulatingData) {
                 return;
             }
-            dealTable.orderByKey()
-                    .limitToFirst(Constants.ITEM_PER_PAGE + 1)
-                    .startAt(lastRecordKey)
-                    .addListenerForSingleValueEvent(new DealTableValueEventListener());
+            firebaseUtil.fetchFirebaseDeals(new DealTableValueEventListener(), lastRecordKey);
             isPopulatingData = true;
         }
     }
