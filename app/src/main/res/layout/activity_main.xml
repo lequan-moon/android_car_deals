@@ -6,10 +6,14 @@
     android:layout_height="match_parent"
     tools:context="com.moudevops.quanlm.cardeal.MainActivity">
 
-    <it.neokree.materialtabs.MaterialTabHost
+    <com.astuetz.PagerSlidingTabStrip
         android:id="@+id/mainContainer"
         android:layout_width="match_parent"
-        android:layout_height="48dp"/>
+        android:layout_height="48dip" />
+    <!--<it.neokree.materialtabs.MaterialTabHost-->
+        <!--android:id="@+id/mainContainer"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="48dp"/>-->
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"

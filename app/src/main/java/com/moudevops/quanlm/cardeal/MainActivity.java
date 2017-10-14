@@ -6,23 +6,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.astuetz.PagerSlidingTabStrip;
 import com.moudevops.quanlm.cardeal.adapter.ViewPagerAdapter;
 import com.moudevops.quanlm.cardeal.fragment.DealsFragment;
 import com.moudevops.quanlm.cardeal.fragment.MyAccountFragment;
 import com.moudevops.quanlm.cardeal.fragment.MyGaraFragment;
 import com.moudevops.quanlm.cardeal.fragment.SettingsFragment;
 
-import it.neokree.materialtabs.MaterialTab;
-import it.neokree.materialtabs.MaterialTabHost;
-import it.neokree.materialtabs.MaterialTabListener;
-
-public class MainActivity extends AppCompatActivity implements MaterialTabListener,
+public class MainActivity extends AppCompatActivity implements
         MyGaraFragment.OnFragmentInteractionListener,
         DealsFragment.OnFragmentInteractionListener,
         SettingsFragment.OnFragmentInteractionListener,
         MyAccountFragment.OnFragmentInteractionListener{
 
-    MaterialTabHost tabHost;
+    PagerSlidingTabStrip tabHost;
     ViewPager pager;
 
     @Override
@@ -39,42 +36,13 @@ public class MainActivity extends AppCompatActivity implements MaterialTabListen
     }
 
     private void initControl() {
-        tabHost = (MaterialTabHost) findViewById(R.id.mainContainer);
+        tabHost = (PagerSlidingTabStrip) findViewById(R.id.mainContainer);
         pager = (ViewPager) this.findViewById(R.id.pager);
 
         // init view pager
         ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         pager.setAdapter(pagerAdapter);
-        pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                // when user do a swipe the selected tab change
-                tabHost.setSelectedNavigationItem(position);
-            }
-        });
-
-        // insert all tabs from pagerAdapter data
-        for (int i = 0; i < pagerAdapter.getCount(); i++) {
-            tabHost.addTab(
-                    tabHost.newTab()
-                            .setText(pagerAdapter.getPageTitle(i))
-                            .setTabListener(this)
-            );
-        }
-    }
-
-    @Override
-    public void onTabSelected(MaterialTab tab) {
-        pager.setCurrentItem(tab.getPosition());
-    }
-
-    @Override
-    public void onTabReselected(MaterialTab tab) {
-
-    }
-
-    @Override
-    public void onTabUnselected(MaterialTab tab) {
+        tabHost.setViewPager(pager);
 
     }
 
