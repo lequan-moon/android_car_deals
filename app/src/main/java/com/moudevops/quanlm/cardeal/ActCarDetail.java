@@ -67,7 +67,7 @@ public class ActCarDetail extends AppCompatActivity {
         btnBuy = (TextView) findViewById(R.id.btnBuy);
         btnLike = (TextView) findViewById(R.id.btnLike);
 
-        txtCarName.setText(selectedCar.getName());
+        txtCarName.setText(selectedCar.getDealName());
         txtCarDescription.setText(selectedCar.getDescription());
         txtPrice.setText(selectedCar.getPrice());
         txtDealerName.setText(selectedCar.getDealerDisplayName());
@@ -76,18 +76,11 @@ public class ActCarDetail extends AppCompatActivity {
         if (selectedCar.getImages() != null && selectedCar.getImages().size() > 0) {
             for (int i = 0; i < selectedCar.getImages().size(); i++) {
                 final DefaultSliderView slide = new DefaultSliderView(this);
-                Task<Uri> downloadUrl = mStorage.getReferenceFromUrl(selectedCar.getImages().get(i)).getDownloadUrl();
-                downloadUrl.addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        slide.image(uri.toString());
-                    }
-                });
+                slide.image(selectedCar.getImages().get(i));
 
                 slider.addSlider(slide);
             }
         }
-//        Glide.with(this).load(selectedCar.getImages().get(0)).into(imgCarThumb);
 
         SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCE, MODE_PRIVATE);
         Set<String> favoriteCars = sharedPreferences.getStringSet(Constants.FAVORITE, new ArraySet<String>());

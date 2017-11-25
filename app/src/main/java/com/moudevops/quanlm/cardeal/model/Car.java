@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Car implements Serializable {
     String code;
-    String name;
+    String dealName;
     String description;
     String price;
     String brand;
@@ -34,13 +34,13 @@ public class Car implements Serializable {
 
     public Car(String code, String name, String description, String price) {
         this.code = code;
-        this.name = name;
+        this.dealName = name;
         this.description = description;
         this.price = price;
     }
 
     public Car(String code,
-               String name,
+               String dealName,
                String description,
                String price,
                String brand,
@@ -50,7 +50,7 @@ public class Car implements Serializable {
                List<String> images,
                String dealerDisplayName) {
         this.code = code;
-        this.name = name;
+        this.dealName = dealName;
         this.description = description;
         this.price = price;
         this.brand = brand;
@@ -77,12 +77,12 @@ public class Car implements Serializable {
         this.code = code;
     }
 
-    public String getName() {
-        return name;
+    public String getDealName() {
+        return dealName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDealName(String name) {
+        this.dealName = name;
     }
 
     public String getDescription() {

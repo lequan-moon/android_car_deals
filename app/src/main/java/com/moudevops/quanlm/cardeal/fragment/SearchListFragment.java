@@ -130,18 +130,20 @@ public class SearchListFragment extends Fragment implements
             List filteredCarType = Arrays.asList(mFilter.getCarTypeCode());
             double priceStart = mFilter.getPriceStartValue();
             double priceEnd = mFilter.getPriceEndValue();
-            double carPrice;
-            try {
-                carPrice = Double.valueOf(objDeal.getPrice());
-            } catch (NumberFormatException ex) {
-                // If exception then not defined price
-                // Ex: "contact for detail", "thoa thuan", ...
-                carPrice = 0;
-            }
+
+            // TODO: Temporary remove price value
+//            double carPrice;
+//            try {
+//                carPrice = Double.valueOf(objDeal.getPrice());
+//            } catch (NumberFormatException ex) {
+//                // If exception then not defined price
+//                // Ex: "contact for detail", "thoa thuan", ...
+//                carPrice = 0;
+//            }
 
             if ((Util.isEmptyList(filteredBrand) || filteredBrand.contains(objDeal.getBrand()))
                     && (Util.isEmptyList(filteredCarType) || filteredCarType.contains(objDeal.getCarType()))
-                    && (priceStart <= carPrice && carPrice <= priceEnd)
+//                    && (priceStart <= carPrice && carPrice <= priceEnd)
                     ) {
                 return true;
             } else {
@@ -157,6 +159,7 @@ public class SearchListFragment extends Fragment implements
         mFilter = filter;
 
         lstCar.clear();
+        adtCar.updateData(lstCar);
         firebaseUtil.fetchFirebaseDeals(new DealTableValueEventListener());
     }
 
@@ -202,12 +205,10 @@ public class SearchListFragment extends Fragment implements
             for (DataSnapshot deal : dataSnapshot.getChildren()) {
                 Car objDeal = deal.getValue(Car.class);
                 if (isMatchWithFilter(objDeal)) {
-                    lstCar.add(objDeal);
+                    adtCar.notifyAddData(objDeal);
                     lastRecordKey = deal.getKey();
                 }
             }
-            adtCar.updateData(lstCar);
-            Log.d("LISTDATA", "lstCar count: " + lstCar.size());
             setPopulatingState(false);
         }
 

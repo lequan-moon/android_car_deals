@@ -90,23 +90,7 @@ public class DealsFragment extends Fragment implements CarAdapter.OnCarSelectLis
         super.onResume();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-            DatabaseReference myDeals = mDatabase.getReference(Constants.DEAL_TABLE).child(currentUser.getUid());
-            myDeals.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot deal:
-                            dataSnapshot.getChildren()) {
-                        Car objDeal = deal.getValue(Car.class);
-                        lstCar.add(objDeal);
-                    }
-                    adtCar.notifyDataSetChanged();
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
+            // TODO: QuanLM recode this function
         }
     }
 

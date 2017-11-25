@@ -1,35 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <ImageView
-        android:id="@+id/imgCarThumb"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="fitXY"
-        android:adjustViewBounds="true"
-        android:maxHeight="200dp"/>
-    <LinearLayout
-        android:layout_alignBottom="@+id/imgCarThumb"
-        android:orientation="vertical"
-        android:background="@android:color/black"
-        android:alpha="0.5"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <TextView
-            android:id="@+id/txtCarName"
+        <ImageView
+            android:id="@+id/imgCarThumb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:textSize="30dp"
-            android:text="Car name"/>
-        <TextView
-            android:id="@+id/txtDescription"
-            android:textColor="@android:color/white"
-            android:text="Description of this car"
+            android:scaleType="fitXY"
+            android:adjustViewBounds="true"
+            />
+        <LinearLayout
+            android:layout_alignBottom="@+id/imgCarThumb"
+            android:orientation="vertical"
+            android:background="@android:color/black"
+            android:alpha="0.5"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/txtCarName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textSize="30dp"
+                android:text="Car name"/>
+            <!--<TextView-->
+            <!--android:id="@+id/txtDescription"-->
+            <!--android:textColor="@android:color/white"-->
+            <!--android:text="Description of this car"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content" />-->
+        </LinearLayout>
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        ></LinearLayout>
 
 
-</RelativeLayout>
+
+</LinearLayout>

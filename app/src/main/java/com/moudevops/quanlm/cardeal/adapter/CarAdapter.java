@@ -52,8 +52,8 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
     @Override
     public void onBindViewHolder(final CarViewHolder holder, int position) {
         final Car car = lstCar.get(position);
-        holder.txtCarName.setText(car.getName());
-        holder.txtDescription.setText(car.getSlogan());
+        holder.txtCarName.setText(car.getDealName());
+//        holder.txtDescription.setText(car.getDescription());
         holder.carItemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,7 +64,6 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
         });
         if (car.getImages() != null && car.getImages().size() > 0) {
             String topImageUri = car.getImages().get(0);
-//             StorageReference imageRef = mStorage.getReferenceFromUrl(car.getImages().get(0));
              Glide.with(mContext)
                      .load(topImageUri)
                      .fitCenter()
@@ -87,6 +86,11 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
         notifyDataSetChanged();
     }
 
+    public void notifyAddData(Car newDeal) {
+        this.lstCar.add(newDeal);
+        notifyItemInserted(getItemCount());
+    }
+
     public class CarViewHolder extends RecyclerView.ViewHolder {
         ImageView imgCarThumb;
         TextView txtCarName;
@@ -98,7 +102,6 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
             super(itemView);
             imgCarThumb = (ImageView) itemView.findViewById(R.id.imgCarThumb);
             txtCarName = (TextView) itemView.findViewById(R.id.txtCarName);
-            txtDescription = (TextView) itemView.findViewById(R.id.txtDescription);
             slider = (SliderLayout) itemView.findViewById(R.id.slider);
             this.carItemView = itemView;
         }
